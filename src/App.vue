@@ -1,9 +1,18 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <ion-router-outlet></ion-router-outlet>
   </ion-app>
 </template>
 
-<script setup lang="ts">
-import { IonApp, IonRouterOutlet } from '@ionic/vue';
+<script lang="ts">
+  import { IonApp, IonRouterOutlet } from '@ionic/vue';
+  import { defineComponent } from 'vue';
+  // import CardView from './views/CardView.vue';
+
+  export default defineComponent({
+    name: 'App',
+    components: { IonApp, IonRouterOutlet },
+  });
 </script>
+<style> 
+</style>
