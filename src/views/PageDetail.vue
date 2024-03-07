@@ -49,8 +49,7 @@
 <script setup lang="ts">
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonProgressBar, IonList, IonItem, IonThumbnail, IonLabel, IonButtons, IonBackButton, IonCard, IonCardContent, IonCardTitle, IonCardSubtitle } from '@ionic/vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { musicalNotes } from 'ionicons/icons';
-const dataList = ref([1, 2, 3, 4, 5, 6, 7, 8]);
+// import { musicalNotes } from 'ionicons/icons';
 
 // const portrait = window.matchMedia("(orientation: portrait)");
 
@@ -105,24 +104,6 @@ onMounted(() => {
 
 </script>
 <style scoped>
-/* .video-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  transform-origin: 0 0;
-  transform: rotate(90deg) translateX(-100%);
-}
-.video-container video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  min-height: 100%;
-} */
-
 .fullscreen-video {
     position: fixed;
     top: 0;
