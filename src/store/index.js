@@ -190,20 +190,20 @@ export default createStore({
     };
   },
   mutations: {
-    selectAllUsers(state) {
+    toggleSelectAllUsers(state, checked) {
       state.users = state.users.map((user) => {
-        return Object.assign(user, {
-          "@selected": true,
-        });
+        if (checked) {
+          return Object.assign(user, {
+            "@selected": true,
+          });
+        } else {
+          return Object.assign(user, {
+            "@selected": false,
+          });
+        }
       });
     },
-    deselectAllUsers(state) {
-      state.users = state.users.map((user) => {
-        return Object.assign(user, {
-          "@selected": false,
-        });
-      });
-    },
+
     selectMultipleUsers(state, user) {
       state.users = state.users.map((userItem) => {
         if (userItem.id === user.id) {

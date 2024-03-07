@@ -4,8 +4,8 @@
             <ion-toolbar>
                 <ion-title>Title</ion-title>
                 <ion-buttons :collapse="true" slot="end">
-                    <ion-button :disabled="isMultipledBtnLocked" slot="end" @click="openMultipleEditModalForm()"
-                        fill="outline">
+                    <ion-button :disabled="isEditSelectedUsersBtnUnlocked" slot="end"
+                        @click="openMultipleEditModalForm()" fill="outline">
                         Edit Selected
                         <ion-icon slot="end" :icon="create"></ion-icon>
                     </ion-button>
@@ -17,7 +17,7 @@
                 <ion-toolbar>
                     <ion-title size="large">Title</ion-title>
                     <ion-buttons :collapse="true" slot="end">
-                        <ion-button :disabled="isMultipledBtnLocked" @click="openMultipleEditModalForm()">
+                        <ion-button :disabled="isEditSelectedUsersBtnUnlocked" @click="openMultipleEditModalForm()">
                             Edit Selected
                             <ion-icon slot="end" :icon="create"></ion-icon></ion-button>
                     </ion-buttons>
@@ -35,8 +35,16 @@
             </ion-list> -->
             <ion-searchbar v-model="searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
             <ion-list>
+                <ion-item>
+                    Select all
+                    <ion-checkbox @ionChange="toggleSelectDeselectUsers" slot="start"></ion-checkbox>
+                </ion-item>
+
+            </ion-list>
+            <ion-list>
                 <ion-item v-for="(item, index) in computedUsers" v-bind:key="index">
-                    <ion-checkbox @ionChange="selectUserToggle(item)" slot="start"></ion-checkbox>
+                    <ion-checkbox :checked="item['@selected']" @ionChange="selectUserToggle(item)"
+                        slot="start"></ion-checkbox>
                     <ion-avatar slot="start">
                         <img alt="Silhouette of a person's head"
                             src="https://ionicframework.com/docs/img/demos/avatar.svg" />
@@ -84,14 +92,20 @@ import { create } from 'ionicons/icons';
 
 import UserAdminForm from '@/components/userAdminForm.vue';
 import ModalFormMultipleUserEdit from '@/components/modalFormMultipleUserEdit.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 //
 const searchValue = ref('');
 const appStore = useStore();
 const isOpen = ref(false);
 const isOpenMultipleEditModalForm = ref(false);
+const isEditSelectedUsersBtnUnlocked = ref(true)
 
+//
+const toggleSelectDeselectUsers = ({ target }) => {
+    isEditSelectedUsersBtnUnlocked.value = !target.checked;
+    appStore.commit('toggleSelectAllUsers', target.checked)
+}
 
 const openMultipleEditModalForm = () => {
     isOpenMultipleEditModalForm.value = true;
@@ -102,6 +116,7 @@ const closeMultipleEditModalForm = () => {
 }
 
 const selectUserOpenModal = ({ user, modalState }) => {
+
     appStore.commit('selectUser', user);
     isOpen.value = modalState;
 };
@@ -113,11 +128,12 @@ const deselectUserCloseModal = () => {
 
 const selectUserToggle = (user) => {
     console.log('user', user);
-    appStore.commit('selectMultipleUsers', user)
+
+    appStore.commit('selectMultipleUsers', user);
 };
 
-const computedUsers = computed(() => _searchUsers(appStore.state.users, searchValue.value));
-const isMultipledBtnLocked = appStore.getters.isMultipledBtnLocked;
+const computedUsers = computed(() => searchUsersByAllProps(appStore.state.users, searchValue.value));
+
 
 const manageStatusColor = (status = "") => {
     if (status === "ACTIVE") {
@@ -131,7 +147,7 @@ const manageStatusColor = (status = "") => {
 };
 
 
-function _searchUsers(users, query) {
+function searchUsersByAllProps(users, query) {
     return users.filter(user => {
         for (const prop in user) {
             if (searchValue.value === '' || typeof user[prop] === 'string' && user[prop].toLowerCase().includes(query.toLowerCase())) {
@@ -141,7 +157,13 @@ function _searchUsers(users, query) {
         return false;
     });
 }
-
+watch(() => appStore.state.users, (b, a) => {
+    if (appStore.state.users.some(user => user['@selected'])) {
+        isEditSelectedUsersBtnUnlocked.value = false;
+    } else {
+        isEditSelectedUsersBtnUnlocked.value = true;
+    }
+});
 </script>
 
 <style scoped></style>
