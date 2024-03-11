@@ -1,74 +1,71 @@
 import { createRouter, createWebHistory } from "@ionic/vue-router";
 import { RouteRecordRaw } from "vue-router";
-import AppRouteIndexPage from "../views/AppRouteIndexPage.vue";
+import AppRouteIndexPageAdmin from "@/views/AppRouteIndexPageAdmin.vue";
+import AppRouteIndexPageUser from "@/views/AppRouteIndexPageUser.vue";
+import PageLogin from "@/views/PageLogin.vue";
 import Cookies from "js-cookie";
-
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/home",
+    redirect: "/login",
   },
   {
-    path: "/",
-    component: AppRouteIndexPage,
-    meta: { requiresAuth: true }, // Protected route
+    path: "/login",
+    name: "Login",
+    component: PageLogin,
+  },
+  {
+    path: "/admin-dashboard",
+    component: AppRouteIndexPageAdmin,
+    meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       {
         path: "",
-        redirect: "/home",
+        name: "AdminPath1",
+        component: () => import("@/views/PageAdminView1.vue"),
       },
       {
-        path: "home",
-        component: () => import("../views/PageAdmin.vue"),
+        path: "/admin-path2",
+        name: "AdminPath2",
+        component: () => import("@/views/PageAdminView2.vue"),
       },
       {
-        path: "/detail",
-        component: () => import("../views/PageDetail.vue"),
+        path: "/admin-path3",
+        name: "AdminPath3",
+        component: () => import("@/views/PageAdminView3.vue"),
       },
-      {
-        path: "/dashboard",
-        component: () => import("../views/PageUserDashboard.vue"),
-      },
-      
-      {
-        path: "radio",
-        component: () => import("../views/PageRadio.vue"),
-      },
-      {
-        path: "library",
-        component: () => import("../views/PageLibrary.vue"),
-      },
-      {
-        path: "search",
-        component: () => import("../views/PageRadio.vue"),
-      },
+      // Add more children routes as needed
     ],
   },
+  {
+    path: "/user-dashboard",
+    component: AppRouteIndexPageUser,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "",
+        name: "UserPath1",
+        component: () => import("@/views/PageUserView1.vue"),
+      },
+      {
+        path: "/user-path2",
+        name: "UserPath2",
+        component: () => import("@/views/PageUserView2.vue"),
+      },
+      // Add more children routes as needed
+    ],
+  },
+  // Other routes if needed
 ];
 
 const router = createRouter({
-  // Use: createWebHistory(process.env.BASE_URL) in your app
   history: createWebHistory(),
   routes,
 });
-// Cookies.set('isAuthenticated', true);
-router.beforeEach((to, from, next) => {
-  const isAuthenticated =
-    /* Check authentication status here */ Cookies.get("isAuthenticated") ===
-    "true"; // Replace with your authentication logic
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      next("/login"); // Redirect to login page if not authenticated
-    } else {
-      next(); // Continue to the route if authenticated
-    }
-  } else {
-    next(); // Continue to non-protected routes
-  }
-});
 
 export default router;
+
 // login logic
 // After successful authentication
 // Cookies.set('isAuthenticated', true);
