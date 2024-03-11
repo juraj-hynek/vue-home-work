@@ -17,17 +17,29 @@ import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, I
 import { playCircle, radio, library, search, home } from 'ionicons/icons';
 import { defineComponent, ref } from 'vue';
 
+
 const tabsConfig = [
   {
-    name: 'Page 1',
+    name: 'UserPath1',
     path: '/user-dashboard',
-    tab: 'home',
+    tab: 'UserPath1',
     icon: home
+  },
+  {
+    name: 'UserPath2',
+    path: '/user-path2',
+    tab: 'UserPath2',
+    icon: playCircle
+  },
+  {
+    name: 'UserPath3',
+    path: '/user-path3',
+    tab: 'UserPath3',
+    icon: radio
   }
 ]
-
 export default defineComponent({
-  nam: "AppRouteIndexPage",
+  nam: "AppRouteIndexPageUser",
   components: { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon },
   setup() {
     const tabsTitles = ref(tabsConfig || []);

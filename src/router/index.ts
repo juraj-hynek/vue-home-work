@@ -46,11 +46,16 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "",
         name: "UserPath1",
-        component: () => import("@/views/PageUserView1.vue"),
+        component: () => import("@/views/PageUserDashboard.vue"),
       },
       {
         path: "/user-path2",
         name: "UserPath2",
+        component: () => import("@/views/PageUserView2.vue"),
+      },
+      {
+        path: "/user-path3",
+        name: "UserPath3",
         component: () => import("@/views/PageUserView2.vue"),
       },
       // Add more children routes as needed
