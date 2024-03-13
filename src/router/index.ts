@@ -10,6 +10,9 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     redirect: "/login",
+    beforeEnter: (to, from, next) => {
+      next(); // Proceed to the login page
+    },
   },
   {
     path: "/login",
@@ -43,7 +46,6 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
     beforeEnter: (to, from, next) => {
-      console.log(Cookies.get("connect.sid"))
       if (!isAdminLoggedIn()) {
         next("/login"); // Redirect to login if admin is not logged in
       } else {
@@ -85,18 +87,29 @@ const routes: Array<RouteRecordRaw> = [
 
 // Function to check if admin is logged in
 function isAdminLoggedIn(): boolean {
-  return Cookies.get('connect.sid') && Cookies.get('isAdmin') === "true"
+  const sid = Cookies.get("connect.sid");
+  const admin = Boolean(Cookies.get("isAdmin"));
+
+  console.log("isAdminLoggedIn called", { admin, sid });
+
+  return sid && admin;
 }
 
 // Function to check if user is logged in (You need to implement this according to your authentication logic)
 function isUserLoggedIn(): boolean {
-  return Cookies.get('connect.sid') && Cookies.get('isAdmin') === "false"
+  const sid = Cookies.get("connect.sid");
+  const admin = Boolean(Cookies.get("isUser"));
+
+  console.log("isUserLoggedIn called", { admin, sid });
+  return sid && admin;
 }
 
-function deleteAuthCokie() {
+export function deleteAuthCokie() {
+  console.log("deleteAuthCokie called");
   Cookies.remove("connect.sid");
   Cookies.remove("isAdmin");
   Cookies.remove("isAuthenticated");
+  Cookies.remove("isUser");
 }
 
 const router = createRouter({

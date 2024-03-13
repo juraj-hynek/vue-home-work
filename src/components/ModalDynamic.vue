@@ -3,9 +3,12 @@
   <ion-modal :is-open="isModalOpen" @ionModalDidDismiss="closeModalHandler">
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{modalTitle}}</ion-title>
+        <ion-title>{{ modalTitle }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="controlModalVisibility(false)">Close</ion-button>
+          <ion-button @click="controlModalVisibility({
+    modalStatus: false,
+    item: null
+  })">Close</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -19,7 +22,6 @@
 import { IonButtons, IonButton, IonModal, IonHeader, IonToolbar, IonContent, IonTitle } from '@ionic/vue';
 import { defineComponent } from 'vue';
 
-
 export default defineComponent({
   name: 'ModalDynamic',
   components: { IonButtons, IonButton, IonModal, IonHeader, IonToolbar, IonContent, IonTitle },
@@ -32,5 +34,5 @@ export default defineComponent({
   setup() {
     return {}
   }
-})
+});
 </script>

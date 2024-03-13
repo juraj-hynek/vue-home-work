@@ -1,39 +1,50 @@
 <template>
-      <ion-page>
-            <ion-header :translucent="true">
-                  <ion-toolbar>
-                        <ion-title>Title</ion-title>
-                        <!-- <ion-buttons :collapse="true" slot="end">
-                    <ion-button :disabled="isEditSelectedUsersBtnUnlocked" slot="end"
-                        @click="openMultipleEditModalForm()" fill="outline">
-                        Edit Selected
-                        <ion-icon slot="end" :icon="create"></ion-icon>
-                    </ion-button>
-                </ion-buttons> -->
-                  </ion-toolbar>
-            </ion-header>
-            <ion-content class="ion-padding">
-                  <p>Page adming view 2</p>
-            </ion-content>
-      </ion-page>
+      <page-layout pageTitle="Upload Iamges">
+            <load-images-create-pdf :controlModalVisibility="actions.controlModalVisibility"
+                  acceptFiles="image/*"></load-images-create-pdf>
+            <modal-dynamic :controlModalVisibility="actions.controlModalVisibility"
+                  :closeModalHandler="actions.closeModalHandler" :isModalOpen="vm.isModalOpen">
+                  <ion-img :src="selectedImage" v-if="selectedImage"></ion-img>
+            </modal-dynamic>
+      </page-layout>
 </template>
 
-<script lang="ts">
-import { IonPage, IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
-import { playCircle, radio, library, search, home } from 'ionicons/icons';
-import { defineComponent, ref } from 'vue';
+<script setup type="ts">
+import { IonImg } from '@ionic/vue'
+import LoadImagesCreatePdf from '@/components/loadImagesCreatePdf.vue';
+import pageLayout from '@/components/pageLayout.vue';
+import ModalDynamic from '@/components/modalDynamic.vue';
+import { reactive, ref } from 'vue';
 
+const selectedImage = ref('');
 
-export default defineComponent({
-      nam: "PageAdminView2",
-      components: { IonPage, IonContent, IonHeader, IonTitle, IonToolbar, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon },
-      setup() {
-            return {
-                  playCircle,
-                  radio,
-                  library,
-                  search,
-            };
-      },
+const alertPropsConfig = reactive({
+      alertHeader: '',
+      alertSubHeader: '',
+      alertMessage: '',
+      alertButtons: ['OK']
 });
+
+const vm = reactive({
+      isModalOpen: false
+});
+
+const CONSTANTS = {
+      MESSAGE_IMAGES_NOT_UPLOADED: 'No images to upload and convert',
+      MESSAGE_IMAGE_QTY_LMITATION: 'Image uploading is limited to 2 images only, Sorry'
+};
+
+const actions = {};
+actions.controlModalVisibility = ({
+      modalStatus,
+      item
+}) => {
+      vm.isModalOpen = modalStatus
+      selectedImage.value = item;
+};
+
+actions.closeModalHandler = () => {
+      console.log('modal closed');
+};
+
 </script>

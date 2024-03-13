@@ -1,5 +1,4 @@
 import { useStore } from "vuex";
-
 const URL_BASE = `http://localhost:3000`;
 const headers = {
   "Content-Type": "application/json",
@@ -7,7 +6,6 @@ const headers = {
 
 export const useUserActions = () => {
   const store = useStore();
-
   const updateUser = async (dataToSend) => {
     try {
       const response = await fetch(`${URL_BASE}/users`, {
@@ -60,6 +58,11 @@ export const useUserActions = () => {
         throw new Error("Network response was not ok");
       }
 
+      const data = await response.json();
+
+      console.log('data', data)
+
+   
     } catch (error) {
       console.error("Error logging in:", error.message);
       store.commit("setUserLoginStatus", false);

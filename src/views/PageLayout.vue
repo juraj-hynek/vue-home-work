@@ -22,7 +22,7 @@
 import { ref } from 'vue';
 import { IonButton } from '@ionic/vue';
 import PageLayout from '@/components/pageLayout.vue';
-import ModalDynamic from '@/components/ModalDynamic.vue';
+import ModalDynamic from '@/components/modalDynamic.vue';
 import DynamicFormRenderer from '@/components/dynamicFormRenderer.vue';
 
 const isModalOpen = ref(false);

@@ -1,9 +1,15 @@
 const express = require("express");
-const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const port = 3000;
+
+const app = express();
+const dotenv = require("dotenv");
+
+// Load environment variables from .env file
+dotenv.config();
+const secretKey = process.env.SECRET_KEY;
 
 const isAuthenticated = require("./isAuthnticated");
 const logout = require("./handlers/logout");
@@ -29,7 +35,7 @@ app.use(cookieParser()); // Use cookie parser middleware
 // Setup session middleware
 app.use(
   session({
-    secret: "secrasdadasdasasiduasd08sd09aa7s6et", // Secret key used to sign the session ID cookie
+    secret: secretKey, // Secret key used to sign the session ID cookie
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false, httpOnly: false }, // Set httpOnly to false to allow JavaScript access
@@ -268,7 +274,7 @@ app.post("/login", (req, res) => {
       message: "Admin logged in",
     });
   } else {
-    res.cookie("isAdmin", false, { httpOnly: false });
+    res.cookie("isUser", true, { httpOnly: false });
     res.status(200).json({
       status: "ok",
       message: "User logged in",
@@ -282,7 +288,7 @@ app.get("/users", isAuthenticated, (req, res) => {
   if (isAdmin) {
     // If the user is an admin, send all users' data
     res.status(200).json({
-      data: removePasswordFromUser(users),
+      data: removePasswordFromUser(users).filter((user) => !user.isAdmin),
       message: "Admin user data retrieved successfully",
       id: user.id,
     });

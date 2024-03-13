@@ -1,5 +1,5 @@
 <template>
-    <page-layout>
+    <page-layout :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick" :rightButtonClick="actions.rightButtonClick">
         <ion-searchbar v-model="vm.searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
         <ion-list>
             <ion-item>
@@ -86,8 +86,10 @@ import { create } from "ionicons/icons";
 import UserAdminForm from "@/components/userAdminForm.vue";
 import ModalFormMultipleUserEdit from "@/components/modalFormMultipleUserEdit.vue";
 import PageLayout from "@/components/pageLayout.vue";
-import { computed, onMounted, reactive } from "vue";
+import { computed, reactive } from "vue";
 import { useStore } from "vuex";
+import { star, arrowBack } from 'ionicons/icons';
+import router from "@/router";
 
 const appStore = useStore();
 
@@ -155,10 +157,14 @@ actions.searchInUsers = () => {
         return false; // If no property contains the query, return false
     });
 }
+actions.rightButtonClick = ()=>{
+    alert()
+}
+
+actions.leftButtonClick = ()=>{
+   router.push('/login')
+}
 const userDataList = computed(actions.searchInUsers);
-
-
-
 </script>
 
 <style scoped></style>

@@ -38,7 +38,7 @@ import { IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons } from '@ionic/v
 import { cloudUpload } from 'ionicons/icons';
 
 import PageLayout from '@/components/pageLayout.vue';
-import ModalDynamic from '@/components/ModalDynamic.vue';
+import ModalDynamic from '@/components/modalDynamic.vue';
 import { ref, } from 'vue';
 import jsPDF from 'jspdf';
 
