@@ -123,6 +123,8 @@ export default defineComponent({
     components: {IonCard, IonThumbnail, IonCardHeader,  IonCardTitle, IonCardSubtitle, IonList, IonItem, IonRange, IonCheckbox, IonSelect, IonSelectOption, IonSegment, IonSegmentButton, IonLabel },
     setup(props) {
         const formState = ref(props.formState || {});
+
+        
         const inputChange = ({ target }) => {
             formState.value[target.name] = target.value || target.checked
             console.log('inputChange', target.name, target.value)

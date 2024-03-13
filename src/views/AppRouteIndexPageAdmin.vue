@@ -12,10 +12,15 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="js">
 import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
-import { playCircle, radio, library, search, home } from 'ionicons/icons';
-import { defineComponent, ref } from 'vue';
+import { playCircle, radio, home } from 'ionicons/icons';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import route from '@/router';
+import {useUserActions} from '@/store/asyncActions';
+
+const { fetchUsers } = useUserActions();
 
 const tabsConfig = [
   {
@@ -38,18 +43,28 @@ const tabsConfig = [
   }
 ]
 
-export default defineComponent({
-  nam: "AppRouteIndexPageAdmin",
-  components: { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon },
-  setup() {
-    const tabsTitles = ref(tabsConfig || []);
-    return {
-      playCircle,
-      radio,
-      library,
-      search,
-      tabsTitles
-    };
-  },
+const router = useRoute();
+const tabsTitles = ref(tabsConfig || []);
+
+const fetchData = (async () => {
+  try {
+    const request = await fetchUsers();
+    console.log('request', request);
+    if (!request) {
+      setTimeout(() => {
+        router.push('/')
+      }, 1000)
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 });
+
+
+watch(route, (to, from) => {
+  fetchData();
+  console.log('route changed')
+}, { immediate: true });
+
+
 </script>

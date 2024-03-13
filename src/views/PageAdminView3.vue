@@ -12,14 +12,14 @@
                 </ion-buttons> -->
                   </ion-toolbar>
             </ion-header>
-      <ion-content>
-            <p>Page adming view 3</p>
-      </ion-content>
+            <ion-content class="ion-padding">
+                  <p>Page adming view 3</p>
+            </ion-content>
       </ion-page>
 </template>
 
 <script lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonContent,IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
 import { playCircle, radio, library, search, home } from 'ionicons/icons';
 import { defineComponent, ref } from 'vue';
 

@@ -1,6 +1,5 @@
 <template>
     <ion-content class="ion-padding">
-        <div>{{ JSON.stringify(formData, null, 2) }}</div>
         <ion-list>
             <ion-item>
                 <ion-avatar>
@@ -10,7 +9,7 @@
                 <ion-label slot="end"> #{{ formData.id }}</ion-label>
             </ion-item>
             <ion-item>
-                <ion-input :value="formData.name" @ionInput="handleChange('name', $event.target.value)"
+                <ion-input :value="formData.username" @ionInput="handleChange('username', $event.target.value)"
                     label="name"></ion-input>
             </ion-item>
             <ion-item>
@@ -37,16 +36,17 @@
             <ion-button expand="full" @click="submitForm()">Save changes</ion-button>
         </ion-toolbar>
     </ion-footer>
-    <ion-alert :is-open="isOpen" header="Action OK" sub-header=""
-        message="" :buttons="alertButtons"
+    <ion-alert :is-open="isOpen" header="Action OK" sub-header="" message="" :buttons="alertButtons"
         @didDismiss="setOpen(false)"></ion-alert>
 </template>
 
 <script setup type="ts">
-import {IonAlert, IonLabel, IonAvatar, IonInput, IonContent, IonList, IonItem, IonSelect, IonSelectOption, IonRange, IonFooter, IonToolbar, IonButton } from '@ionic/vue';
-import { ref } from 'vue';
+import { IonAlert, IonLabel, IonAvatar, IonInput, IonContent, IonList, IonItem, IonSelect, IonSelectOption, IonRange, IonFooter, IonToolbar, IonButton } from '@ionic/vue';
+import { reactive, ref } from 'vue';
 import { useStore } from 'vuex';
+import { useUserActions } from '@/store/asyncActions';
 
+const {  fetchUsers, updateUser } = useUserActions();
 const isOpen = ref(false);
 
 const statusOptions = ['ACTIVE', 'PAUSED', 'BLOCKED'];
@@ -54,7 +54,7 @@ const statusOptions = ['ACTIVE', 'PAUSED', 'BLOCKED'];
 const appStore = useStore();
 
 // Initialize form data
-const formData = ref({
+const formData = reactive({
     ...appStore.state.selectedUser
 });
 
@@ -66,19 +66,11 @@ const setOpen = (state) => {
 
 // Handle input change
 const handleChange = (field, value) => {
-    formData.value[field] = value;
+    formData[field] = value;
 };
 
 // Form submission logic
-const submitForm = async () => {
-    try {
-        await appStore.commit('updateUserHttp', { user: formData.value });
-        if (appStore.state.serverStatus.includes('ok')) {
-            isOpen.value = true;
-        }
-
-    } catch (error) {
-        console.log(error.message)
-    }
+const submitForm = () => {
+    updateUser(formData)
 };
 </script>

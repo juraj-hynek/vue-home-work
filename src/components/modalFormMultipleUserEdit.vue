@@ -43,6 +43,6 @@ const handleChange = (field, value) => {
 
 // Form submission logic
 const submitForm = () => {
-    appStore.commit('updateMultipleusers', formData.value);
+    //appStore.commit('updateMultipleusers', formData.value);
 };
 </script>

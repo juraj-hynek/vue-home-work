@@ -6,7 +6,7 @@
           <ion-progress-bar v-if="false" type="indeterminate"></ion-progress-bar>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
+      <ion-content class="ion-padding">
         <div class="example-content">Search content</div>
       </ion-content>
     </ion-page>

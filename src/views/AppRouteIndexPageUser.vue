@@ -12,11 +12,11 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
-import { playCircle, radio, library, search, home } from 'ionicons/icons';
-import { defineComponent, ref } from 'vue';
-
+import { playCircle, radio, home } from 'ionicons/icons';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const tabsConfig = [
   {
@@ -38,18 +38,8 @@ const tabsConfig = [
     icon: radio
   }
 ]
-export default defineComponent({
-  nam: "AppRouteIndexPageUser",
-  components: { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon },
-  setup() {
-    const tabsTitles = ref(tabsConfig || []);
-    return {
-      playCircle,
-      radio,
-      library,
-      search,
-      tabsTitles
-    };
-  },
-});
+const tabsTitles = ref(tabsConfig || []);
+const route = useRoute();
+
+watch(route, (to, from) => { }, { immediate: true });
 </script>

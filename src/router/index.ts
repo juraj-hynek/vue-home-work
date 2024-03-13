@@ -5,6 +5,7 @@ import AppRouteIndexPageUser from "@/views/AppRouteIndexPageUser.vue";
 import PageLogin from "@/views/PageLogin.vue";
 import Cookies from "js-cookie";
 
+// Define your routes
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -14,11 +15,16 @@ const routes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "Login",
     component: PageLogin,
+    beforeEnter: (to, from, next) => {
+      deleteAuthCokie();
+      next(); // Proceed to the login page
+    },
   },
   {
     path: "/admin-dashboard",
+    name: "AdminDashboard",
     component: AppRouteIndexPageAdmin,
-    meta: { requiresAuth: true, requiresAdmin: true },
+    // meta: { requiresAuth: true, isAdmin: true },
     children: [
       {
         path: "",
@@ -35,13 +41,21 @@ const routes: Array<RouteRecordRaw> = [
         name: "AdminPath3",
         component: () => import("@/views/PageAdminView3.vue"),
       },
-      // Add more children routes as needed
     ],
+    beforeEnter: (to, from, next) => {
+      console.log(Cookies.get("connect.sid"))
+      if (!isAdminLoggedIn()) {
+        next("/login"); // Redirect to login if admin is not logged in
+      } else {
+        next(); // Proceed to the admin dashboard
+      }
+    },
   },
   {
     path: "/user-dashboard",
     component: AppRouteIndexPageUser,
-    meta: { requiresAuth: true },
+    name: "UserDashboard",
+    // meta: { requiresAuth: true, isUser: true },
     children: [
       {
         path: "",
@@ -56,13 +70,34 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/user-path3",
         name: "UserPath3",
-        component: () => import("@/views/PageUserView2.vue"),
+        component: () => import("@/views/PageUserView3.vue"),
       },
-      // Add more children routes as needed
     ],
+    beforeEnter: (to, from, next) => {
+      if (!isUserLoggedIn()) {
+        next("/login"); // Redirect to login if user is not logged in
+      } else {
+        next(); // Proceed to the user dashboard
+      }
+    },
   },
-  // Other routes if needed
 ];
+
+// Function to check if admin is logged in
+function isAdminLoggedIn(): boolean {
+  return Cookies.get('connect.sid') && Cookies.get('isAdmin') === "true"
+}
+
+// Function to check if user is logged in (You need to implement this according to your authentication logic)
+function isUserLoggedIn(): boolean {
+  return Cookies.get('connect.sid') && Cookies.get('isAdmin') === "false"
+}
+
+function deleteAuthCokie() {
+  Cookies.remove("connect.sid");
+  Cookies.remove("isAdmin");
+  Cookies.remove("isAuthenticated");
+}
 
 const router = createRouter({
   history: createWebHistory(),

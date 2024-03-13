@@ -5,6 +5,17 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const port = 3000;
 
+const isAuthenticated = require("./isAuthnticated");
+const logout = require("./handlers/logout");
+
+const removePasswordFromUser = (data = []) => {
+  return users.map((user) => {
+    const u = { ...user };
+    delete u.password;
+    return u;
+  });
+};
+
 app.use(express.json()); // Enable body parsing (put)
 // app.use(cors()); // Enable CORS
 app.use(
@@ -21,7 +32,7 @@ app.use(
     secret: "secrasdadasdasasiduasd08sd09aa7s6et", // Secret key used to sign the session ID cookie
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Set secure to true if using HTTPS
+    cookie: { secure: false, httpOnly: false }, // Set httpOnly to false to allow JavaScript access
   })
 );
 
@@ -225,119 +236,112 @@ const users = [
   },
 ];
 
-// Middleware to check if user is authenticated
-const isAuthenticated = (req, res, next) => {
-  if (req.session.authenticated) {
-    next(); // User is authenticated, proceed to the next middleware or route handler
-  } else {
-    res.status(401).json({ message: "Unauthorized" }); // User is not authenticated, send 401 Unauthorized response
-  }
-};
+// Logout route
+app.post("/logout", isAuthenticated, logout);
 
-app.get("/test", (req, res) => {
-  res.cookie("name", "express", { expire: 360000 + Date.now() });
-  res.json({
-    data: "ahoj",
-  });
-});
-
-// Login route
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
+
+  // Find the user in the array based on username and password
   const user = users.find(
     (user) => user.username === username && user.password === password
   );
-  if (user) {
-    // Set session variable to mark user as authenticated
-    req.session.authenticated = true;
-    // Set isAdmin cookie based on user's admin status
-    res.cookie("isAdmin", user.isAdmin, { httpOnly: false, path: "/" });
-    res.cookie("isAuthentificated", true, { httpOnly: false, path: "/" });
 
-    // res.cookie("isAdmin", "true", { expire: 360000 + Date.now() });
-    // res.cookie("isAuthentificated", "true", { expire: 360000 + Date.now() });
-
-    if (user.isAdmin) {
-      res.status(200).json({
-        user: user,
-        data: users,
-        message: "Login successful",
-      });
-    } else {
-      res
-        .status(200)
-        .json({ user: user, data: [], message: "Login successful" });
-    }
-  } else {
+  if (!user) {
     res.status(401).json({ message: "Invalid username or password" });
+    return;
+  }
+
+  if (user.status === "BLOCKED") {
+    res.status(403).json({ message: "Login not allowed" });
+    return;
+  }
+
+  req.session.authenticated = true;
+  req.session.user = user; // Store user data in the session
+  req.session.isAdmin = user.isAdmin; // Set isAdmin flag based on user's admin status
+  res.cookie("isAuthenticated", true, { httpOnly: false });
+
+  if (user.isAdmin) {
+    res.cookie("isAdmin", true, { httpOnly: false });
+    res.status(200).json({
+      message: "Admin logged in",
+    });
+  } else {
+    res.cookie("isAdmin", false, { httpOnly: false });
+    res.status(200).json({
+      status: "ok",
+      message: "User logged in",
+    });
   }
 });
-// Logout route
-app.post("/logout", isAuthenticated, (req, res) => {
-  // Destroy session to log out user
-  req.session.destroy();
-  res.status(200).json({ message: "Logout successful" });
-});
 
-// Get all users (requires authentication)
 app.get("/users", isAuthenticated, (req, res) => {
-  res.status(200).json(users); // 200 OK
+  const { isAdmin, user } = req.session;
+
+  if (isAdmin) {
+    // If the user is an admin, send all users' data
+    res.status(200).json({
+      data: removePasswordFromUser(users),
+      message: "Admin user data retrieved successfully",
+      id: user.id,
+    });
+  } else {
+    // If the user is not an admin, find the user by ID
+    const getUser = users.find((u) => u.id === user.id);
+
+    if (!getUser || getUser.status === "BLOCKED") {
+      // If the user is not found or blocked, return a 404 Not Found response
+      res.status(404).json({ message: "User not found", status: "blocked" });
+    } else {
+      // If the user is found and not blocked, send the user's data
+      res.status(200).json({
+        data: removePasswordFromUser([user]),
+        message: "User data retrieved successfully",
+        status: "ok",
+      });
+    }
+  }
 });
 
-// Update a user by ID (requires authentication)
-// app.put("/users/:id", isAuthenticated, (req, res) => {
-//   const userId = parseInt(req.params.id);
-//   const updatedUser = req.body;
+app.put("/users", isAuthenticated, (req, res) => {
+  const body = req.body;
+  const updatedUser = body;
+  const isAdmin = req.session.user.isAdmin;
 
-//   const index = users.findIndex((user) => user.id === userId);
-//   if (index !== -1) {
-//     users[index] = { ...users[index], ...updatedUser };
-//     res.status(200).json(users); // 200 OK
-//   } else {
-//     res.status(404).json({ message: "User not found" }); // 404 Not Found
-//   }
-// });
+  const index = users.findIndex((user) => user.id === updatedUser.id);
 
-// Update a user by ID (requires authentication)
-app.put("/users/:id", isAuthenticated, (req, res) => {
-  const userId = parseInt(req.params.id);
-  const updatedUser = req.body;
+  if (index > -1) {
+    if (isAdmin) {
+      users[index] = { ...users[index], ...updatedUser }; // edit any props of user
 
-  const index = users.findIndex((user) => user.id === userId);
-  if (index !== -1) {
-    const currentUser = req.session.user;
-
-    // Check if the authenticated user is the user being updated and is an admin
-    if (
-      currentUser.id === userId &&
-      currentUser.isAdmin &&
-      users[index].isAdmin
-    ) {
-      users[index] = { ...users[index], ...updatedUser };
-      res.status(200).json(users); // 200 OK
-    }
-    // Check if the authenticated user is the user being updated and is not an admin
-    else if (
-      currentUser.id === userId &&
-      !currentUser.isAdmin &&
-      !users[index].isAdmin
-    ) {
-      // Restrict properties that can be updated if user is not an admin
-      const updatedUser = {
-        username: updatedUser.name,
-        surname: updatedUser.surname,
-        pwd: updatedUser.pwd,
-      };
-
-      users[index] = { ...users[index], ...updatedUser };
-      res.status(200).json(users[index]); // 200 OK
+      res.status(200).json({
+        status: "ok",
+        data: removePasswordFromUser(users),
+        isAdmin: true,
+      });
+      //
     } else {
-      res.status(403).json({ message: "Forbidden" }); // 403 Forbidden
+      // non admin user can only edit pdfImagWQty
+      if (updatedUser.username || updatedUser.password) {
+        users[index].username = updatedUser.username;
+        users[index].password = updatedUser.password;
+
+        res.status(200).json({
+          status: "ok",
+          message: "User updated username or password",
+          data: removePasswordFromUser([users[index]]),
+          isAdmin: false,
+        });
+      }
     }
   } else {
-    res.status(404).json({ message: "User not found" }); // 404 Not Found
+    res.status(404).json({
+      message: "Invalid User",
+    });
   }
 });
+
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
 });

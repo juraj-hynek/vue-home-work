@@ -1,220 +1,164 @@
 <template>
-    <ion-page>
-        <ion-header :translucent="true">
-            <ion-toolbar>
-                <ion-title>Title</ion-title>
-                <ion-buttons :collapse="true" slot="end">
-                    <ion-button :disabled="isEditSelectedUsersBtnUnlocked" slot="end"
-                        @click="openMultipleEditModalForm()" fill="outline">
-                        Edit Selected
-                        <ion-icon slot="end" :icon="create"></ion-icon>
-                    </ion-button>
-                </ion-buttons>
-            </ion-toolbar>
-        </ion-header>
-        <ion-content :fullscreen="true">
-            <ion-header collapse="condense">
-                <ion-toolbar>
-                    <ion-title size="large">Title</ion-title>
-                    <ion-buttons :collapse="true" slot="end">
-                        <ion-button :disabled="isEditSelectedUsersBtnUnlocked" @click="openMultipleEditModalForm()">
-                            Edit Selected
-                            <ion-icon slot="end" :icon="create"></ion-icon></ion-button>
-                    </ion-buttons>
-                </ion-toolbar>
-            </ion-header>
-            <ion-searchbar v-model="searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
-            <ion-list>
-                <ion-item>
-                    Select all
-                    <ion-checkbox @ionChange="toggleSelectDeselectUsers" slot="start"></ion-checkbox>
-                </ion-item>
-
-            </ion-list>
-            <ion-list>
-                <ion-item v-for="(item, index) in computedUsers" v-bind:key="index">
-                    <ion-checkbox slot="start" :checked="item['selected']" @ionChange="selectUserToggle(item)" />
-                    <ion-avatar>
-                        <img alt="Silhouette of a person's head"
-                            src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                    </ion-avatar>
-                    <ion-text>{{ item.name }}</ion-text>
-                    <ion-badge slot="end" :color="manageStatusColor(item.status)">{{ item.status }}</ion-badge>
-                    <ion-button slot="end" @click="selectUserOpenModal({ user: item, modalState: true })"
-                        fill="outline">
-                        Edit
-                        <ion-icon :icon="create"></ion-icon>
-                    </ion-button>
-                </ion-item>
-            </ion-list>
-            <div>
-                <ion-modal :is-open="isOpen">
-                    <ion-header>
-                        <ion-toolbar>
-                            <ion-title>Modal</ion-title>
-                            <ion-buttons slot="end">
-                                <ion-button @click="deselectUserCloseModal">Close</ion-button>
-                            </ion-buttons>
-                        </ion-toolbar>
-                    </ion-header>
-                    <user-admin-form></user-admin-form>
-                </ion-modal>
-                <ion-modal :is-open="isOpenMultipleEditModalForm">
-                    <ion-header>
-                        <ion-toolbar>
-                            <ion-title>Modal</ion-title>
-                            <ion-buttons slot="end">
-                                <ion-button @click="closeMultipleEditModalForm()">Close</ion-button>
-                            </ion-buttons>
-                        </ion-toolbar>
-                    </ion-header>
-                    <modal-form-multiple-user-edit></modal-form-multiple-user-edit>
-                </ion-modal>
-            </div>
-        </ion-content>
-    </ion-page>
+    <page-layout>
+        <ion-searchbar v-model="vm.searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
+        <ion-list>
+            <ion-item>
+                <ion-label slot="start">
+                    <ion-checkbox @ionChange="actions.selectAllUsers($event.target.checked)"
+                        slot="start">Select</ion-checkbox>
+                </ion-label>
+                <ion-label slot="end">
+                    <ion-button @click="actions.toggleMultipleEditModal({ modalStatus: true })">Edit
+                        multiple</ion-button>
+                </ion-label>
+            </ion-item>
+        </ion-list>
+        <ion-list>
+            <ion-item v-for="(item, index) in userDataList" v-bind:key="index">
+                <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
+                    @ionChange="actions.selectSingleUser(item)" />
+                <ion-avatar>
+                    <img alt="Silhouette of a person's head"
+                        src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                </ion-avatar>
+                <ion-text>{{ item.username }}</ion-text>
+                <ion-badge slot="end" :color="actions.manageStatusColor(item.status)">{{
+            item.status
+        }}</ion-badge>
+                <ion-button slot="end" @click="
+        actions.toggleSingleEditModal({ modalStatus: true, item })
+            " fill="outline">
+                    Edit
+                    <ion-icon :icon="create"></ion-icon>
+                </ion-button>
+            </ion-item>
+        </ion-list>
+        <div>
+            <ion-modal :is-open="vm.ispenSingleEditModal">
+                <ion-header>
+                    <ion-toolbar>
+                        <ion-title>Modal</ion-title>
+                        <ion-buttons slot="end">
+                            <ion-button
+                                @click="actions.toggleSingleEditModal({ modalStatus: false, item: {} })">Close</ion-button>
+                        </ion-buttons>
+                    </ion-toolbar>
+                </ion-header>
+                <user-admin-form></user-admin-form>
+            </ion-modal>
+            <ion-modal :is-open="vm.isOpenMultipleEditModal">
+                <ion-header>
+                    <ion-toolbar>
+                        <ion-title>Modal</ion-title>
+                        <ion-buttons slot="end">
+                            <ion-button
+                                @click="actions.toggleMultipleEditModal({ modalStatus: false})">Close</ion-button>
+                        </ion-buttons>
+                    </ion-toolbar>
+                </ion-header>
+                <modal-form-multiple-user-edit></modal-form-multiple-user-edit>
+            </ion-modal>
+        </div>
+        <!-- </ion-content> -->
+    </page-layout>
 </template>
 
 <script setup>
-import { IonText, IonSearchbar, IonBadge, IonIcon, IonCheckbox, IonAvatar, IonPage, IonItem, IonLabel, IonList, IonButtons, IonButton, IonModal, IonHeader, IonToolbar, IonContent, IonTitle } from '@ionic/vue';
-import { create } from 'ionicons/icons';
-import UserAdminForm from '@/components/userAdminForm.vue';
-import ModalFormMultipleUserEdit from '@/components/modalFormMultipleUserEdit.vue';
-// import PropsDemoComp from '@/components/propsDemoComp.vue';
-import { ref, computed, watch, onMounted } from 'vue';
-import { useStore } from 'vuex';
-//
-const searchValue = ref('');
+import {
+    IonText,
+    IonSearchbar,
+    IonBadge,
+    IonIcon,
+    IonCheckbox,
+    IonAvatar,
+    IonItem,
+    IonLabel,
+    IonList,
+    IonButtons,
+    IonButton,
+    IonModal,
+    IonHeader,
+    IonToolbar,
+
+    IonTitle,
+} from "@ionic/vue";
+import { create } from "ionicons/icons";
+import UserAdminForm from "@/components/userAdminForm.vue";
+import ModalFormMultipleUserEdit from "@/components/modalFormMultipleUserEdit.vue";
+import PageLayout from "@/components/pageLayout.vue";
+import { computed, onMounted, reactive } from "vue";
+import { useStore } from "vuex";
+
 const appStore = useStore();
-const isOpen = ref(false);
-const isOpenMultipleEditModalForm = ref(false);
-const isEditSelectedUsersBtnUnlocked = ref(true)
 
-//
-const toggleSelectDeselectUsers = ({ target }) => {
-    isEditSelectedUsersBtnUnlocked.value = !target.checked;
-    appStore.commit('toggleSelectAllUsers', target.checked)
-}
+const vm = reactive({
+    ispenSingleEditModal: false,
+    isOpenMultipleEditModal: false,
+    selectedUsersForEdit: [],
+    selectedOneUser: {},
+    searchValue: '',
+    isMultyUserCheckerOn: false
+});
 
-const openMultipleEditModalForm = () => {
-    isOpenMultipleEditModalForm.value = true;
+const actions = {};
+
+actions.toggleSingleEditModal = ({ modalStatus, item = {} }) => {
+    // alert(JSON.stringify(item,null, 2))
+    vm.ispenSingleEditModal = modalStatus;
+    appStore.commit('selectUser', item);
 };
 
-const closeMultipleEditModalForm = () => {
-    isOpenMultipleEditModalForm.value = false;
-}
-
-const selectUserOpenModal = ({ user, modalState }) => {
-
-    appStore.commit('selectUser', user);
-    isOpen.value = modalState;
+actions.toggleMultipleEditModal = ({ modalStatus }) => {
+    vm.isOpenMultipleEditModal = modalStatus;
 };
 
-const deselectUserCloseModal = () => {
-    appStore.commit('deselectUser');
-    isOpen.value = false;
-};
-
-const selectUserToggle = (user) => {
+actions.selectMultipleUsers = () => {
     appStore.commit('selectMultipleUsers', user);
-};
+}
 
-const computedUsers = computed(() => searchUsersByAllProps(appStore.state.users, searchValue.value));
 
-const manageStatusColor = (status = "") => {
-    if (status === "ACTIVE") {
-        return "primary";
-    } else if (status === "PAUSED") {
-        return "warning"
+actions.selectAllUsers = (checked) => {
+    console.log(checked)
+    appStore.commit('selectAllUsers', true);
+}
+
+actions.selectSingleUser = (user) => {
+    appStore.commit('selectUser', user);
+}
+
+
+actions.manageStatusColor = (status) => {
+    switch (status) {
+        case 'ACTIVE':
+            return 'PRIMARY';
+
+        case "PAUSED":
+            return ''
+        case "BLOCKED":
+            return "DANGER"
+
+        default:
+            return 'PRIMARY'
     }
-    else if (status === "BLOCKED") {
-        return "danger"
-    }
-};
-
-
-function searchUsersByAllProps(users, query) {
-    return users?.filter(user => {
-        for (const prop in user) {
-            if (searchValue.value === '' || typeof user[prop] === 'string' && user[prop].toLowerCase().includes(query.toLowerCase())) {
-                return true;
+}
+actions.searchInUsers = () => {
+    const lowerCaseQuery = vm.searchValue.toLowerCase().trim();
+    return appStore.state.users.filter(obj => {
+        for (const prop in obj) {
+            if (lowerCaseQuery === '' || Object.prototype.hasOwnProperty.call(obj, prop)) {
+                const value = obj[prop];
+                if (typeof value === 'string' && value.toLowerCase().includes(lowerCaseQuery)) {
+                    return true; // If any property contains the query, return true
+                }
             }
         }
-        return false;
+        return false; // If no property contains the query, return false
     });
 }
-watch(() => appStore.state.users, () => {
-    console.log('appStore.state.users', appStore.state.users)
-    if (appStore.state.users?.some(user => user['selected'])) {
-        isEditSelectedUsersBtnUnlocked.value = false;
-    } else {
-        isEditSelectedUsersBtnUnlocked.value = true;
-    }
-});
-
-onMounted(async () => {
-    try {
-        await appStore.commit('fetchUsers');
-    } catch (error) {
-        console.log('fetchUsers error', error.message)
-    }
-});
+const userDataList = computed(actions.searchInUsers);
 
 
-// const testPropsFunctionForDemo = (value) => {
-//     console.log('Kitty say hellooo', value)
-// }
-
-// const testPropsFunctionForDemoEmit= (value)=>{
-//     console.log('I am emitting', value)
-// }
 
 </script>
 
 <style scoped></style>
-
-// const formDescription = [
-// {
-// type: 'text',
-// label: 'labe 1'
-// },
-// {
-// type: 'number',
-// label: 'labe 1'
-// },
-// {
-// type: 'range',
-// label: 'labe 1'
-// },
-// {
-// type: 'date',
-// label: 'labe 1'
-// },
-// {
-// type: 'time',
-// label: 'labe 1'
-// },
-// {
-// type: 'checkbox',
-// label: 'labe 1'
-// },
-// {
-// type: 'radio',
-// label: 'labe 1'
-// }
-// ]
-
-// const change = ({ target }) => {
-// const { value } = target
-// }
-
-<!-- <ion-list>
-                <ion-item v-for="(item, index) in formDescription" v-bind:key="index">
-                   <ion-label>
-                     <ion-text>ahoj</ion-text>
-                   </ion-label>
-                   <ion-label>
-                    <input class="" :type="item.type" @change="change" />
-                   </ion-label>
-                </ion-item>
-            </ion-list> -->

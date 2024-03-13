@@ -12,7 +12,7 @@
                 </ion-buttons> -->
                   </ion-toolbar>
             </ion-header>
-            <ion-content>
+            <ion-content class="ion-padding">
                   <p>Page adming view 2</p>
             </ion-content>
       </ion-page>

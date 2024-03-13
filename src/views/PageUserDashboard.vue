@@ -34,13 +34,12 @@
 </template>
 
 <script setup>
-// import AlertButton from '../components/alertComp.vue'
-import { IonGrid, IonRow, IonCol, IonList, IonItem, IonImg, IonButton, IonButtons, modalController } from '@ionic/vue';
-import { create, ellipsisHorizontal, ellipsisVertical, helpCircle, personCircle, search, star, cloudUpload } from 'ionicons/icons';
+import { IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons } from '@ionic/vue';
+import { cloudUpload } from 'ionicons/icons';
 
 import PageLayout from '@/components/pageLayout.vue';
 import ModalDynamic from '@/components/ModalDynamic.vue';
-import { ref, watch } from 'vue';
+import { ref, } from 'vue';
 import jsPDF from 'jspdf';
 
 // State
