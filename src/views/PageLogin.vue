@@ -3,11 +3,11 @@
     :controlToastVisibility="controlToastVisibility">
     <ion-item>
       <ion-label position="floating">Username</ion-label>
-      <ion-input @ionInput="ionInputHandler('username', $event.target.value)" type="text"></ion-input>
+      <ion-input id="username" @ionInput="ionInputHandler('username', $event.target.value)" type="text"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Password</ion-label>
-      <ion-input @ionInput="ionInputHandler('password', $event.target.value)" type="password"></ion-input>
+      <ion-input id="password"  @ionInput="ionInputHandler('password', $event.target.value)" type="password"></ion-input>
     </ion-item>
     <ion-button :disabled="isButtonLocked" expand="full" @click="handleLogin">Login</ion-button>
   </page-layout>
@@ -39,7 +39,12 @@ const formState = reactive({
 });
 
 const ionInputHandler = (inputName, value) => {
-  formState[inputName] = value;
+  // formState[inputName] = value; make unit test complains
+  if (inputName === 'username') {
+    formState.username = value
+  } else {
+    formState.password = password
+  }
 };
 
 
@@ -76,7 +81,7 @@ const handleLogin = async () => {
 
 const controlToastVisibility = () => {
   console.log('page toast is dismissed');
-}
+};
 
 
 const isButtonLocked = formState.username.length === "" || formState.password.length === ""
