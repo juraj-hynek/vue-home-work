@@ -42,11 +42,15 @@
 
 <script setup type="ts">
 import { IonAlert, IonLabel, IonAvatar, IonInput, IonContent, IonList, IonItem, IonSelect, IonSelectOption, IonRange, IonFooter, IonToolbar, IonButton } from '@ionic/vue';
-import { reactive, ref } from 'vue';
+import { reactive, ref, defineProps, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useUserActions } from '@/store/asyncActions';
 
-const {  fetchUsers, updateUser } = useUserActions();
+const props = defineProps({
+    openToastModal: Function
+});
+
+const { updateUser } = useUserActions();
 const isOpen = ref(false);
 
 const statusOptions = ['ACTIVE', 'PAUSED', 'BLOCKED'];
@@ -70,7 +74,18 @@ const handleChange = (field, value) => {
 };
 
 // Form submission logic
-const submitForm = () => {
-    updateUser(formData)
+const submitForm = async () => {
+    props.openToastModal(true);
+    try {
+        await updateUser(formData);
+
+        setTimeout(() => {
+            props.openToastModal(false);
+        }, 1000)
+    } catch (error) {
+        //
+    }
 };
+
+
 </script>

@@ -24,17 +24,16 @@
         <ion-content class="ion-padding" :fullscreen="true">
             <slot></slot>
         </ion-content>
-        <ion-toast :is-open="isToastOpen" message="This toast will close in 5 seconds" :duration="5000"
-            @didDismiss="controlToastVisibility(false)"></ion-toast>
+        <ion-toast :is-open="isToastOpen" :message="toastMessage" :duration="toastDuration"
+            @didDismiss="controlToastVisibility && controlToastVisibility(false)"></ion-toast>
         <ion-loading trigger="open-loading" :duration="3000" message="Dismissing after 3 seconds..."> </ion-loading>
         <ion-alert :buttons="alertButtons" :is-open="isAlertOpen" :header="alertHeader" :sub-header="alertSubHeader"
-            :message="alertMessage" @didDismiss="controlAlertVisibility(false)"></ion-alert>
+            :message="alertMessage" @didDismiss="controlAlertVisibility && controlAlertVisibility(false)"></ion-alert>
     </ion-page>
 </template>
 <script>
 import { IonAlert, IonProgressBar, IonLoading, IonToast, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon } from '@ionic/vue';
 import { defineComponent } from 'vue';
-
 
 export default defineComponent({
     name: 'PageLayout',
@@ -59,6 +58,8 @@ export default defineComponent({
         isModalOpen: Boolean,
         controlModalVisibility: Function,
         isToastOpen: Boolean,
+        toastMessage: String,
+        toastDuration: Number,
         controlToastVisibility: Function,
         isProgressBarOpen: Boolean,
         isAlertOpen: Boolean,

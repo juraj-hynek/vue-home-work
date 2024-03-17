@@ -1,5 +1,5 @@
 <template>
-    <page-layout :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick" :rightButtonClick="actions.rightButtonClick">
+    <page-layout :toastMessage="vmPage.toastMessage" :isToastOpen="vmPage.isToastOpen" :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick" :rightButtonClick="actions.rightButtonClick">
         <ion-searchbar v-model="vm.searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
         <ion-list>
             <ion-item>
@@ -44,7 +44,7 @@
                         </ion-buttons>
                     </ion-toolbar>
                 </ion-header>
-                <user-admin-form></user-admin-form>
+                <user-admin-form :openToastModal ="actions.openToastModal"></user-admin-form>
             </ion-modal>
             <ion-modal :is-open="vm.isOpenMultipleEditModal">
                 <ion-header>
@@ -93,6 +93,13 @@ import router from "@/router";
 
 const appStore = useStore();
 
+const vmPage = reactive({
+    isToastOpen: false,
+    toastMessage: 'Moment ..',
+});
+
+
+
 const vm = reactive({
     ispenSingleEditModal: false,
     isOpenMultipleEditModal: false,
@@ -103,6 +110,12 @@ const vm = reactive({
 });
 
 const actions = {};
+
+actions.openToastModal = (value)=>{
+    vmPage.isToastOpen = value;
+    vmPage.toastMessage = 'Moment ...'
+
+}
 
 actions.toggleSingleEditModal = ({ modalStatus, item = {} }) => {
     // alert(JSON.stringify(item,null, 2))
@@ -158,7 +171,7 @@ actions.searchInUsers = () => {
     });
 }
 actions.rightButtonClick = ()=>{
-    alert()
+    alert();
 }
 
 actions.leftButtonClick = ()=>{

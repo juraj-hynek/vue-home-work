@@ -1,41 +1,53 @@
 <template>
-      <ion-page>
-            <ion-header :translucent="true">
-                  <ion-toolbar>
-                        <ion-title>Title</ion-title>
-                        <!-- <ion-buttons :collapse="true" slot="end">
-                    <ion-button :disabled="isEditSelectedUsersBtnUnlocked" slot="end"
-                        @click="openMultipleEditModalForm()" fill="outline">
-                        Edit Selected
-                        <ion-icon slot="end" :icon="create"></ion-icon>
-                    </ion-button>
-                </ion-buttons> -->
-                  </ion-toolbar>
-            </ion-header>
-            <ion-content class="ion-padding">
-                  <p>Page adming view 3</p>
-            </ion-content>
-      </ion-page>
+  <page-layout :alertButtons="alertPropsConfig.alertButtons" :alertMessage="alertPropsConfig.alertHeader"
+    :alertSubHeader="alertPropsConfig.alertSubHeader" :alertHeader="alertPropsConfig.alertHeader"
+    :isAlertOpen="vm.isAlertOpen" pageTitle="Upload Iamges">
+  </page-layout>
 </template>
 
-<script lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonContent, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
-import { playCircle, radio, library, search, home } from 'ionicons/icons';
-import { defineComponent, ref } from 'vue';
+<script setup type="ts">
+import pageLayout from '@/components/pageLayout.vue';
+import { reactive, } from 'vue';
 
 
-export default defineComponent({
-      nam: "PageAdminView3",
-      components: { IonPage, IonHeader, IonToolbar, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon, IonContent },
-      setup() {
-
-            return {
-                  playCircle,
-                  radio,
-                  library,
-                  search,
-
-            };
-      },
+const alertPropsConfig = reactive({
+  alertHeader: '',
+  alertSubHeader: '',
+  alertMessage: '',
+  alertButtons: ['OK']
 });
+
+const vm = reactive({
+  isModalOpen: false,
+  isAlertOpen: false
+});
+
+const CONSTANTS = {
+
+};
+
+const actions = {};
+actions.controlModalVisibility = ({
+  modalStatus,
+  item
+}) => {
+  vm.isModalOpen = modalStatus
+  // selectedImage.value = item;
+};
+
+actions.closeModalHandler = () => {
+  console.log('modal closed');
+};
+
+actions.alertHandler = ({ title, subTitle, message }) => {
+  vm.isAlertOpen = true;
+  alertPropsConfig.alertHeader = title;
+  alertPropsConfig.alertSubHeader = subTitle;
+  alertPropsConfig.alertMessage = message;
+};
+
+actions.controlAlertVisibility = (alertVisibility) => {
+  vm.isAlertOpen = alertVisibility;
+};
+
 </script>

@@ -239,6 +239,7 @@ export default createStore({
       userLoggedIn: false,
       // home work
       users: [],
+      user: {},
       selectedUser: null,
       selectedUsers: [],
       isModalOpen: false,
@@ -260,6 +261,10 @@ export default createStore({
 
     setLoading(state, value) {
       state.isLoading = value;
+    },
+
+    setUser(state, { data }) {
+      state.user = data;
     },
     // init load load
     setUsers(state, { data = [], error = "" }) {

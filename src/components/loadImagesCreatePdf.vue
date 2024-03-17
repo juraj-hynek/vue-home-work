@@ -11,6 +11,7 @@
             <ion-button slot="end" v-if="isButtoMakePDFVisible" @click="convertToPDF">Convert to PDF</ion-button>
         </ion-buttons>
     </ion-buttons>
+   
     <ion-grid>
         <ion-row>
             <ion-col size="6" size-md="4" size-lg="2"
@@ -26,35 +27,30 @@
 import { IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons } from '@ionic/vue';
 import { cloudUpload } from 'ionicons/icons';
 
-import { defineComponent, ref, } from 'vue';
+import { computed, defineComponent, onMounted, ref, watch, } from 'vue';
 import jsPDF from 'jspdf';
+import { useStore } from 'vuex';
 
 export default defineComponent({
     name: 'LoadImagesCreatePdf',
     props: {
         controlModalVisibility: Function,
         isButtoMakePDFVisible: Boolean,
-        acceptFiles: String
+        acceptFiles: String,
+        imageLimit: Number,
+        alertHandler: Function
     },
     components: {
         IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons,
     },
-    setup() {
+    setup(props) {
+        const appStore = useStore();
+
+        console.log('props.IMAGE_LIMIT', props.imageLimit)
+        console.log('alertHandler', props.alertHandler)
 
         // State
         const imageUrls = ref([]);
-        const isAlertOpen = ref(false);
-
-
-        /**
-         * 
-         * CONSTANTS
-         */
-
-        const controlAlertVisibility = ({ modalStatus, alertMessage }) => {
-            isAlertOpen.value = modalStatus;
-            alertPropsConfig.value.alertMessage = alertMessage;
-        };
 
         const handleFileUpload = _handleFileUpload;
         const convertToPDF = _convertImagesToPdf;
@@ -94,8 +90,12 @@ export default defineComponent({
             /**
             * VALIDATION + LIMITATION FOR IMAGES QTY TO UPLOAD LATER
             */
-            if (files.length > 10) {
-                controlAlertVisibility({ modalStatus: true, alertMessage: MESSAGE_IMAGE_QTY_LMITATION });
+            if (files.length > props?.imageLimit) {
+                props.alertHandler({
+                    title: 'Important Message',
+                    subTitle: 'Restriction !',
+                    message: `Sorry, Only ${props.imageLimit} (s) can be uploaded, contact admin for more details`
+                });
                 return;
             }
 
@@ -109,12 +109,22 @@ export default defineComponent({
                 reader.readAsDataURL(file);
             }
         }
+
+        watch(appStore.state, () => {
+            console.log("appStore.state", appStore.state)
+        });
+
+        onMounted(() => {
+            const pdfImageLimit = (appStore.state.user.pdfImageLimit);
+            console.log('pdfImageLimit', pdfImageLimit)
+        })
+
         return {
             imageUrls,
             handleFileUpload,
             convertToPDF,
             cloudUpload,
-
+          
         }
     }
 })

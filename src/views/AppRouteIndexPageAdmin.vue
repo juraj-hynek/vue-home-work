@@ -16,9 +16,13 @@
 import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
 import { playCircle, radio, home } from 'ionicons/icons';
 import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import route from '@/router';
-import {useUserActions} from '@/store/asyncActions';
+import { useUserActions } from '@/store/asyncActions';
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000"); // Connect to the WebSocket server
+
 
 const { fetchUsers } = useUserActions();
 
@@ -43,7 +47,7 @@ const tabsConfig = [
   }
 ]
 
-const router = useRoute();
+const router = useRouter();
 const tabsTitles = ref(tabsConfig || []);
 
 const fetchData = (async () => {
@@ -65,6 +69,8 @@ watch(route, (to, from) => {
   fetchData();
   console.log('route changed')
 }, { immediate: true });
+
+
 
 
 </script>
