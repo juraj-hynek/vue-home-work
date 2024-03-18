@@ -244,16 +244,19 @@ export default createStore({
       selectedUserProps: null,
       isMultipleEditModalOpen: false,
 
-      // home work
+      //
+      isToastVisible: false,
+      toastMessage: "",
+      toastDuration: 2000,
     };
   },
 
   actions: {},
   mutations: {
-    setUserLoginStatus(state, value) {
-      state.isUserLogedIn = value;
+    setToast(state, { toastState, toastMessage }) {
+      state.isToastVisible = toastState;
+      state.toastMessage = toastMessage;
     },
-
     setLoading(state, value) {
       state.isLoading = value;
     },
@@ -270,7 +273,7 @@ export default createStore({
     selectAllUsers(state) {
       state.users = state.users.map((user) => {
         return Object.assign(user, {
-          selected: !user.selected,
+          selected: user.selected ? user.selected : true,
         });
       });
     },

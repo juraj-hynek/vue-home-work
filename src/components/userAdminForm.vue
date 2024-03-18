@@ -46,9 +46,10 @@ import { reactive, ref, defineProps, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useUserActions } from '@/store/asyncActions';
 
-const props = defineProps({
-    openToastModal: Function
-});
+
+// const props = defineProps({
+//     openToastModal: Function
+// });
 
 const { updateUser } = useUserActions();
 const isOpen = ref(false);
@@ -75,12 +76,11 @@ const handleChange = (field, value) => {
 
 // Form submission logic
 const submitForm = async () => {
-    props.openToastModal(true);
+    appStore.commit('setToast', { toastState: true, toastMessage: 'Uno momento ...' })
     try {
         await updateUser(formData);
-
         setTimeout(() => {
-            props.openToastModal(false);
+            appStore.commit('setToast', { toastState: false, toastMessage: '' })
         }, 1000)
     } catch (error) {
         //

@@ -270,12 +270,16 @@ app.post("/login", (req, res) => {
   );
 
   if (!user || user?.status === "BLOCKED") {
-    res.status(404).json({
-      status: 404,
-    });
+    // If user is not found or blocked, return a 404 status with a delay
+    setTimeout(() => {
+      res.status(404).json({
+        status: 404,
+      });
+    }, 2000); // Delay response by 2000ms
     return;
   }
 
+  // If user is found and not blocked, proceed with authentication and session setup
   req.session.authenticated = true;
   req.session.user = user; // Store user data in the session
   req.session.isAdmin = user.isAdmin; // Set isAdmin flag based on user's admin status
@@ -284,11 +288,43 @@ app.post("/login", (req, res) => {
     httpOnly: false,
   });
 
-  res.status(200).json({
-    user: req.session.user,
-    status: 200,
-  });
+  // Return success response with a delay
+  setTimeout(() => {
+    res.status(200).json({
+      user: req.session.user,
+      status: 200,
+    });
+  }, 2000); // Delay response by 2000ms
 });
+
+// app.post("/login", (req, res) => {
+//   const { username, password } = req.body;
+
+//   const user = users.find(
+//     (userToFind) =>
+//       userToFind.username === username && userToFind.password === password
+//   );
+
+//   if (!user || user?.status === "BLOCKED") {
+//     res.status(404).json({
+//       status: 404,
+//     });
+//     return;
+//   }
+
+//   req.session.authenticated = true;
+//   req.session.user = user; // Store user data in the session
+//   req.session.isAdmin = user.isAdmin; // Set isAdmin flag based on user's admin status
+//   res.cookie("isAuthenticated", true, { httpOnly: false });
+//   res.cookie(req.session.user.isAdmin ? "isAdmin" : "isUser", true, {
+//     httpOnly: false,
+//   });
+
+//   res.status(200).json({
+//     user: req.session.user,
+//     status: 200,
+//   });
+// });
 
 app.get("/users", isAuthenticated, (req, res) => {
   const { isAdmin, user } = req.session;

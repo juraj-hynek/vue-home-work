@@ -1,5 +1,7 @@
 <template>
-    <page-layout :toastMessage="vmPage.toastMessage" :isToastOpen="vmPage.isToastOpen" :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick" :rightButtonClick="actions.rightButtonClick">
+    <page-layout :toastMessage="appStore.state.toastMessage" :isToastOpen="appStore.state.isToastVisible"
+        :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick"
+        :rightButtonClick="actions.rightButtonClick">
         <ion-searchbar v-model="vm.searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
         <!-- <ion-list>
             <ion-item>
@@ -23,11 +25,11 @@
                 </ion-avatar>
                 <ion-text>{{ item.username }}</ion-text>
                 <ion-badge slot="end" :color="actions.manageStatusColor(item.status)">{{
-            item.status
-        }}</ion-badge>
+        item.status
+    }}</ion-badge>
                 <ion-button slot="end" @click="
-        actions.toggleSingleEditModal({ modalStatus: true, item })
-            " fill="outline">
+    actions.toggleSingleEditModal({ modalStatus: true, item })
+        " fill="outline">
                     Edit
                     <ion-icon :icon="create"></ion-icon>
                 </ion-button>
@@ -44,7 +46,7 @@
                         </ion-buttons>
                     </ion-toolbar>
                 </ion-header>
-                <user-admin-form :openToastModal ="actions.openToastModal"></user-admin-form>
+                <user-admin-form :openToastModal="actions.openToastModal"></user-admin-form>
             </ion-modal>
             <!-- <ion-modal :is-open="vm.isOpenMultipleEditModal">
                 <ion-header>
@@ -88,7 +90,7 @@ import UserAdminForm from "@/components/userAdminForm.vue";
 import PageLayout from "@/components/pageLayout.vue";
 import { computed, reactive } from "vue";
 import { useStore } from "vuex";
-import {  arrowBack } from 'ionicons/icons';
+import { arrowBack } from 'ionicons/icons';
 import router from "@/router";
 
 const appStore = useStore();
@@ -109,7 +111,7 @@ const vm = reactive({
 
 const actions = {};
 
-actions.openToastModal = (value)=>{
+actions.openToastModal = (value) => {
     vmPage.isToastOpen = value;
     vmPage.toastMessage = 'Moment ...'
 }
@@ -130,7 +132,7 @@ actions.selectMultipleUsers = () => {
 
 
 actions.selectAllUsers = (checked) => {
-    console.log(checked)
+    console.log('selectAllUsers', checked)
     appStore.commit('selectAllUsers', true);
 }
 
@@ -167,12 +169,12 @@ actions.searchInUsers = () => {
         return false; // If no property contains the query, return false
     });
 }
-actions.rightButtonClick = ()=>{
+actions.rightButtonClick = () => {
     alert();
 }
 
-actions.leftButtonClick = ()=>{
-   router.push('/login')
+actions.leftButtonClick = () => {
+    router.push('/login')
 }
 const userDataList = computed(actions.searchInUsers);
 </script>

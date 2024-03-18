@@ -26,7 +26,7 @@
         </ion-content>
         <ion-toast :is-open="isToastOpen" :message="toastMessage" :duration="toastDuration"
             @didDismiss="controlToastVisibility && controlToastVisibility(false)"></ion-toast>
-        <ion-loading trigger="open-loading" :duration="3000" message="Dismissing after 3 seconds..."> </ion-loading>
+        <!-- <ion-loading trigger="open-loading" :duration="3000" message="Dismissing after 3 seconds..."> </ion-loading> -->
         <ion-alert :buttons="alertButtons" :is-open="isAlertOpen" :header="alertHeader" :sub-header="alertSubHeader"
             :message="alertMessage" @didDismiss="controlAlertVisibility && controlAlertVisibility(false)"></ion-alert>
     </ion-page>
