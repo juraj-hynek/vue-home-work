@@ -66,10 +66,9 @@ export const useUserActions = () => {
       }
 
       const data = await response.json();
-      console.log("data", data);
       store.commit('setUser', {
         data: data.user || {}
-      })
+      });
       return data; // Return the data upon successful login
     } catch (error) {
       console.error("Error logging in:", error.message);

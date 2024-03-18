@@ -22,9 +22,6 @@ const vm = reactive({
   isAlertOpen: false
 });
 
-const CONSTANTS = {
-
-};
 
 const actions = {};
 actions.controlModalVisibility = ({

@@ -11,7 +11,6 @@
             <ion-button slot="end" v-if="isButtoMakePDFVisible" @click="convertToPDF">Convert to PDF</ion-button>
         </ion-buttons>
     </ion-buttons>
-   
     <ion-grid>
         <ion-row>
             <ion-col size="6" size-md="4" size-lg="2"
@@ -27,7 +26,7 @@
 import { IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons } from '@ionic/vue';
 import { cloudUpload } from 'ionicons/icons';
 
-import { computed, defineComponent, onMounted, ref, watch, } from 'vue';
+import { computed, defineComponent, ref, watch, } from 'vue';
 import jsPDF from 'jspdf';
 import { useStore } from 'vuex';
 
@@ -37,23 +36,20 @@ export default defineComponent({
         controlModalVisibility: Function,
         isButtoMakePDFVisible: Boolean,
         acceptFiles: String,
-        imageLimit: Number,
         alertHandler: Function
     },
     components: {
         IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons,
     },
-    setup(props) {
+    setup() {
         const appStore = useStore();
 
-        console.log('props.IMAGE_LIMIT', props.imageLimit)
-        console.log('alertHandler', props.alertHandler)
-
-        // State
         const imageUrls = ref([]);
 
         const handleFileUpload = _handleFileUpload;
         const convertToPDF = _convertImagesToPdf;
+
+        const pdfImageLimit = computed(() => appStore.state.user.pdfImageLimit)
 
 
         function _convertImagesToPdf() {
@@ -90,12 +86,8 @@ export default defineComponent({
             /**
             * VALIDATION + LIMITATION FOR IMAGES QTY TO UPLOAD LATER
             */
-            if (files.length > props?.imageLimit) {
-                props.alertHandler({
-                    title: 'Important Message',
-                    subTitle: 'Restriction !',
-                    message: `Sorry, Only ${props.imageLimit} (s) can be uploaded, contact admin for more details`
-                });
+            if (files.length > pdfImageLimit.value) {
+                alert(`Only ${pdfImageLimit.value} images are allowed to upload`)
                 return;
             }
 
@@ -111,20 +103,16 @@ export default defineComponent({
         }
 
         watch(appStore.state, () => {
-            console.log("appStore.state", appStore.state)
+            console.log("appStore.state", appStore.state.user.pdfImageLimit)
         });
 
-        onMounted(() => {
-            const pdfImageLimit = (appStore.state.user.pdfImageLimit);
-            console.log('pdfImageLimit', pdfImageLimit)
-        })
 
         return {
             imageUrls,
             handleFileUpload,
             convertToPDF,
             cloudUpload,
-          
+
         }
     }
 })

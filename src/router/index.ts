@@ -3,6 +3,7 @@ import { RouteRecordRaw } from "vue-router";
 import AppRouteIndexPageAdmin from "@/views/AppRouteIndexPageAdmin.vue";
 import AppRouteIndexPageUser from "@/views/AppRouteIndexPageUser.vue";
 import PageLogin from "@/views/PageLogin.vue";
+import PageError from '@/views/PageError.vue';
 import Cookies from "js-cookie";
 
 // Define your routes
@@ -82,6 +83,10 @@ const routes: Array<RouteRecordRaw> = [
         next(); // Proceed to the user dashboard
       }
     },
+  },
+  {
+    path: '/:catchAll(.*)',
+    component: PageError // Route for all unmatched paths
   },
 ];
 

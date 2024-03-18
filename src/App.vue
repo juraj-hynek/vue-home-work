@@ -11,11 +11,9 @@ export default defineComponent({
   name: 'App',
   components: { IonApp, IonRouterOutlet },
   setup() {
-
     const popStateHandler = () => {
-
-      console.log('changed')
-    }
+    //  console.log('changed')
+    };
 
     onMounted(() => {
       window.addEventListener('popstate', popStateHandler);

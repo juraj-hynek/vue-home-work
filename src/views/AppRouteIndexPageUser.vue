@@ -1,5 +1,5 @@
 <template>
-  <page-layout pageTitle="User Page">
+  <page-layout :pageTitle="appStore.state.user.username">
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar slot="bottom">
@@ -15,11 +15,14 @@
 <script setup lang="ts">
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon, onIonViewDidEnter } from '@ionic/vue';
 import { playCircle, radio, home } from 'ionicons/icons';
-import { ref, onMounted, reactive } from 'vue';
-// import { useRoute } from 'vue-router';
 import PageLayout from '@/components/pageLayout.vue';
 import { io } from "socket.io-client";
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+
+const appStore = useStore();
+
 const socket = io("http://localhost:3000"); // Connect to the WebSocket server
 
 
@@ -47,21 +50,17 @@ const router = useRouter();
 const tabsTitles = ref(tabsConfig || []);
 // const route = useRoute();
 
-onMounted(() => {
+onIonViewDidEnter(() => {
   // Listen for updates from the server
-  socket.on("update", (updatedData) => {
-    // Update your Vue component with the received data
-    // console.log("Received updated data:", updatedData);
-    // Update your Vue component state or trigger a function to update UI
-    if (updatedData.user.status === "BLOCKED") {
+  socket.on("update", (updatedUser) => {
+    if (updatedUser.id === appStore.state.user.id && updatedUser.status === "BLOCKED") {
+      appStore.commit('setUser', { data: {} })
       setTimeout(() => {
         router.push('/login');
       }, 2000);
+    } else {
+      appStore.commit('setUser', { data: updatedUser })
     }
   });
 });
-
-onIonViewDidEnter(() => {
-  console.log('onIonViewDidEnter PU')
-})
 </script>

@@ -2,7 +2,7 @@
       <page-layout :alertButtons="alertPropsConfig.alertButtons" :alertMessage="alertPropsConfig.alertHeader"
             :alertSubHeader="alertPropsConfig.alertSubHeader" :alertHeader="alertPropsConfig.alertHeader"
             :isAlertOpen="vm.isAlertOpen" pageTitle="Upload Iamges">
-            <load-images-create-pdf :alertHandler="actions.alertHandler" :imageLimit="CONSTANTS.IMAGE_LIMIT"
+            <load-images-create-pdf :alertHandler="actions.alertHandler"
                   :controlModalVisibility="actions.controlModalVisibility"
                   acceptFiles="image/*"></load-images-create-pdf>
             <modal-dynamic :controlModalVisibility="actions.controlModalVisibility"
@@ -34,11 +34,6 @@ const vm = reactive({
       isAlertOpen: false
 });
 
-const CONSTANTS = {
-      MESSAGE_IMAGES_NOT_UPLOADED: 'No images to upload and convert',
-      MESSAGE_IMAGE_QTY_LMITATION: 'Image uploading is limited to 2 images only, Sorry',
-      IMAGE_LIMIT: 2
-};
 
 const actions = {};
 actions.controlModalVisibility = ({

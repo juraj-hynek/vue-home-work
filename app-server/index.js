@@ -45,14 +45,20 @@ app.use(
 app.use(cookieParser()); // Use cookie parser middleware
 
 // Setup session middleware
-app.use(
-  session({
-    secret: secretKey, // Secret key used to sign the session ID cookie
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, httpOnly: false }, // Set httpOnly to false to allow JavaScript access
-  })
-);
+const sessionMiddleWare = session({
+  secret: secretKey, // Secret key used to sign the session ID cookie
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, httpOnly: false }, // Set httpOnly to false to allow JavaScript access
+});
+app.use(sessionMiddleWare);
+io.engine.use(sessionMiddleWare);
+
+io.on("connection", (socket) => {
+  const session = socket.request.session;
+  console.log("sessionID", session.id);
+});
+
 
 const users = [
   {
@@ -253,104 +259,6 @@ const users = [
     password: "123321",
   },
 ];
-
-// WebSocket connection handling
-io.on("connection", (socket) => {
-  console.log("A client connected");
-  // Handle changes made by route app.put
-  socket.on("update", (updatedData) => {
-    // Broadcast the updated data to all connected clients
-    io.emit("update", updatedData);
-  });
-});
-
-// function authenticateUser(username, userpassword) {
-//   return users.find(
-//     (userFind) =>
-//       userFind.username === username && userFind.password === userpassword
-//   );
-// }
-
-// app.post("server-app", (req, res) => {
-//   const { actionType = "", payload = {} } = req.body || {};
-//   switch (actionType) {
-//     case "LOGIN":
-//       // Authenticate user (You should implement your own authentication logic here)
-//       if (authenticateUser(payload.username, payload.password)) {
-//         // If authentication successful, set user session
-//         req.session.user = payload.user; // Assuming payload contains user data after login
-//         req.session.user = payload.user;
-//         res.status(200).json({
-//           message: "Logged in successfully",
-//           user: payload.user,
-//         });
-//       } else {
-//         res.status(401).json({ message: "Authentication failed" });
-//       }
-//       return;
-
-//     case "LOGOUT":
-//       // Clear user session on logout
-//       req.session.destroy();
-//       res.status(200).json({
-//         message: "Logged out successfully",
-//       });
-//       return;
-
-//     case "GET_ALL_USERS":
-//       // Check if user is logged in before proceeding
-//       if (!req.session.user) {
-//         res.status(401).json({ message: "Unauthorized" });
-//         return;
-//       }
-
-//       // Check if the user is admin
-//       if (req.session.user.isAdmin) {
-//         // If user is admin, send all users
-//         res.status(200).json({
-//           data: users,
-//         });
-//       } else {
-//         // If user is not admin, send only the logged-in user's data
-//         res.status(200).json({
-//           data: req.session.user,
-//         });
-//       }
-//       return;
-
-//     case "UPDATE_MULTIPLE_USERS":
-//       // Implement update logic here
-//       return;
-
-//     case "UPDATE_ONE_USER": {
-//       // Check if user is logged in before proceeding
-//       if (!req.session.user) {
-//         res.status(401).json({ message: "Unauthorized" });
-//         return;
-//       }
-
-//       const userIndex = users.findIndex(
-//         (userToFind) => userToFind.id === parseInt(payload.id)
-//       );
-//       // handle id immutability by user !!!
-//       // restrict the user props that can be mutated
-//       users[userIndex] = { ...users[userIndex], ...payload };
-
-//       res.status(200).json({
-//         data: users[userIndex],
-//         actionType: actionType,
-//         payload: payload,
-//         user: req.session.user, // Sending user data along with response
-//       });
-//       return;
-//     }
-
-//     default:
-//       req.session.destroy();
-//       return;
-//   }
-// });
-
 // Logout route
 app.post("/logout", isAuthenticated, logout);
 
@@ -399,7 +307,7 @@ app.get("/users", isAuthenticated, (req, res) => {
   if (isAdmin) {
     // If the user is an admin, send all users' data
     res.status(200).json({
-      data: removePasswordFromUser(users).filter((user) => !user.isAdmin),
+      data: removePasswordFromUser(users).filter((userFind) => !userFind.isAdmin),
       message: "Admin user data retrieved successfully",
       user: user,
     });
@@ -434,12 +342,9 @@ app.put("/users", isAuthenticated, (req, res) => {
     if (isAdmin) {
       users[index] = { ...users[index], ...updatedUser }; // edit any props of user
 
-      // Emit WebSocket event with updated data
-      io.emit("update", {
-        // users: removePasswordFromUser(users),
-        user: users[index],
-      });
+      console.log("session.id/update", req.session.id);
 
+      io.emit("update", users[index] || {});
       const jsonConfig = {
         status: "ok",
         data: removePasswordFromUser(users),

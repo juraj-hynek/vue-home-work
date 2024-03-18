@@ -1,5 +1,5 @@
 <template>
-  <ion-page>
+  <page-layout pageTitle="Admin">
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar slot="bottom">
@@ -9,15 +9,15 @@
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
-  </ion-page>
+  </page-layout>
 </template>
 
 <script setup lang="js">
-import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
+import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon, onIonViewDidEnter } from '@ionic/vue';
 import { playCircle, radio, home } from 'ionicons/icons';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import route from '@/router';
+import pageLayout from '@/components/pageLayout.vue';
 import { useUserActions } from '@/store/asyncActions';
 import { io } from "socket.io-client";
 
@@ -65,12 +65,9 @@ const fetchData = (async () => {
 });
 
 
-watch(route, (to, from) => {
+onIonViewDidEnter(() => {
   fetchData();
-  console.log('route changed')
-}, { immediate: true });
-
-
-
-
+  socket.on("update", (updatedData) => {
+    console.log("Received updated data:", updatedData);
+  });});
 </script>
