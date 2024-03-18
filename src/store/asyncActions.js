@@ -49,11 +49,8 @@ export const useUserActions = () => {
       throw error; // Re-throw the error for catching in another async function
     }
   };
-
   const login = async (formState) => {
     try {
-      store.commit("setLoading", true);
-
       const response = await fetch(`${URL_BASE}/login`, {
         method: "POST",
         credentials: "include",
@@ -62,20 +59,27 @@ export const useUserActions = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        // If response is not ok, throw an error with a meaningful message
+        throw new Error(
+          "Failed to log in. Please check your credentials and try again."
+        );
       }
 
       const data = await response.json();
-      store.commit('setUser', {
-        data: data.user || {}
+
+      // Update user data in the store upon successful login
+      store.commit("setUser", {
+        data: data.user || {},
       });
-      return data; // Return the data upon successful login
+
+      // Return data upon successful login
+      return data;
     } catch (error) {
+      // Log the error for debugging purposes
       console.error("Error logging in:", error.message);
-      store.commit("setUserLoginStatus", false);
-      throw error; // Re-throw the error for catching in another async function
-    } finally {
-      store.commit("setLoading", false);
+
+      // Re-throw the error for catching in another async function
+      throw error;
     }
   };
 

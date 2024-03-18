@@ -15,8 +15,8 @@
         </ion-list> -->
         <ion-list>
             <ion-item v-for="(item, index) in userDataList" v-bind:key="index">
-                <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
-                    @ionChange="actions.selectSingleUser(item)" />
+                <!-- <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
+                    @ionChange="actions.selectSingleUser(item)" /> -->
                 <ion-avatar>
                     <img alt="Silhouette of a person's head"
                         src="https://ionicframework.com/docs/img/demos/avatar.svg" />
@@ -84,11 +84,11 @@ import {
 } from "@ionic/vue";
 import { create } from "ionicons/icons";
 import UserAdminForm from "@/components/userAdminForm.vue";
-import ModalFormMultipleUserEdit from "@/components/modalFormMultipleUserEdit.vue";
+// import ModalFormMultipleUserEdit from "@/components/modalFormMultipleUserEdit.vue";
 import PageLayout from "@/components/pageLayout.vue";
 import { computed, reactive } from "vue";
 import { useStore } from "vuex";
-import { star, arrowBack } from 'ionicons/icons';
+import {  arrowBack } from 'ionicons/icons';
 import router from "@/router";
 
 const appStore = useStore();
@@ -97,8 +97,6 @@ const vmPage = reactive({
     isToastOpen: false,
     toastMessage: 'Moment ..',
 });
-
-
 
 const vm = reactive({
     ispenSingleEditModal: false,
@@ -114,7 +112,6 @@ const actions = {};
 actions.openToastModal = (value)=>{
     vmPage.isToastOpen = value;
     vmPage.toastMessage = 'Moment ...'
-
 }
 
 actions.toggleSingleEditModal = ({ modalStatus, item = {} }) => {

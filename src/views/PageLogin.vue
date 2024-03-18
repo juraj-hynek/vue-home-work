@@ -1,5 +1,5 @@
 <template>
-  <page-layout pageTitle="Login" :toastMessage="vmToastMessage" :isToastOpen="vmToastOpen"
+  <page-layout pageTitle="Login" :toastMessage="vm.toastMessage" :isToastOpen="vm.isToastOpen"
     :controlToastVisibility="controlToastVisibility">
     <ion-item>
       <ion-label position="floating">Username</ion-label>
@@ -7,16 +7,48 @@
     </ion-item>
     <ion-item>
       <ion-label position="floating">Password</ion-label>
-      <ion-input id="password"  @ionInput="ionInputHandler('password', $event.target.value)" type="password"></ion-input>
+      <ion-input id="password" @ionInput="ionInputHandler('password', $event.target.value)" type="password"></ion-input>
     </ion-item>
     <ion-button :disabled="isButtonLocked" expand="full" @click="handleLogin">Login</ion-button>
+    
+    <section>
+      <h3>
+        How to use application
+      </h3>
+      <ul>
+        <li>
+         password is 123321 (pre-setup for all users)
+        </li>
+        <li>
+         username for admin is John
+        </li>
+        <li>
+         username for user is Rober
+        </li>
+        <li>
+          path for admin is /admin-dashboard
+        </li>
+        <li>
+          path for user is /user-dashboard
+        </li>
+        <li>
+          if unknown path is entered then error page is rendered
+        </li>
+        <li>
+          if admin will block user (by edit button > open modal and edit status), then user will be redirected to login page and user's auth cookies will be deleted
+        </li>
+        <li>
+          if admin will edit pdfImageLimit qty then user's (Rober or any user) UI (uplaod) from will be notified and new image limit will be set up and user might be (if select more then allowed) notified by alert about limit
+        </li>
+      </ul>
+    </section>
   </page-layout>
 </template>
 
 <script setup>
 import { IonLabel, IonItem, IonInput, IonButton, } from '@ionic/vue'
 import PageLayout from '@/components/pageLayout.vue';
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { useUserActions } from '@/store/asyncActions';
 import { useRouter } from "vue-router";
 import Cookies from "js-cookie";
@@ -29,10 +61,10 @@ const delay = (ms) => {
 const { login } = useUserActions();
 const router = useRouter();
 
-
-const vmToastOpen = ref(false);
-const vmToastMessage = ref("");
-
+const vm = reactive({
+  isToastOpen: false,
+  toastMessage: ''
+})
 const formState = reactive({
   username: 'John',
   password: '123321',
@@ -50,7 +82,7 @@ const ionInputHandler = (inputName, value) => {
 
 const handleLogin = async () => {
   try {
-    vmToastOpen.value = true;
+    vm.isToastOpen = true;
     await login(formState);
 
     const isAdmin = Boolean(Cookies.get('isAdmin'));
@@ -64,17 +96,20 @@ const handleLogin = async () => {
     }
 
     // Display "Moment ..." message
-    vmToastMessage.value = "Moment ...";
-
+    vm.toastMessage = "Moment ...";
     // Wait for 2 seconds before redirecting
     await delay(2000);
-
     // Close toast and redirect
-    vmToastOpen.value = false;
+    vm.isToastOpen = false;
     router.push(redirectTo);
   } catch (error) {
-    vmToastOpen.value = true;
-    vmToastMessage.value = error.message;
+    vm.toastMessage = error.message;
+  }
+  finally {
+    setTimeout(() => {
+      vm.isToastOpen = false;
+      vm.toastMessage = ""
+    }, 5000)
   }
 };
 
@@ -85,55 +120,3 @@ const controlToastVisibility = () => {
 
 const isButtonLocked = formState.username.length === "" || formState.password.length === ""
 </script>
-
-
-<!-- function createComunicatror(url = '', key = '') {
-  return new class {
-    constructor() {}
-
-    async request() {
-      const request = await fetch('http://locahost:3000/users', {
-        method: 'POST',
-        body: JSON.stringify({})
-      });
-      const data = await request.json();
-    }
-
-    select(...params) {
-      return this;
-    }
-    eq() {
-      return this;
-    }
-  }
-}
-
-const httpComunicator = createComunicatror();
-
-{
-  const { data, loading, error } = httpComunicator.from('/users')
-    .select('*')
-    .select('name', 'email');
-
-  // .eq('age', 30);
-}
-
-{
-  const { data, loading, error } = httpComunicator.from('/users')
-    .delete('*');
-}
-{
-  const { data, loading, error } = httpComunicator.from('/users')
-    .update({})
-    .match({ id: 1 });
-}
-
-{
-  const { data, loading, error } = httpComunicator.from('/login')
-    .login({})
-
-}
-{
-  const { data, loading, error } = httpComunicator.from('/logout')
-    .login({})
-} -->

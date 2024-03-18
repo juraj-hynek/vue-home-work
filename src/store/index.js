@@ -222,7 +222,6 @@ import { createStore } from "vuex";
 export default createStore({
   state() {
     return {
-      counter: 0,
       formState: {},
       selectedItems: [],
       pageState: {},
@@ -241,17 +240,19 @@ export default createStore({
       users: [],
       user: {},
       selectedUser: null,
-      selectedUsers: [],
-      isModalOpen: false,
+
       selectedUserProps: null,
-      serverStatus: null,
       isMultipleEditModalOpen: false,
-      isUserAdmin: false,
+
+      // home work
     };
   },
 
   actions: {},
   mutations: {
+    setUserLoginStatus(state, value) {
+      state.isUserLogedIn = value;
+    },
 
     setLoading(state, value) {
       state.isLoading = value;
