@@ -59,7 +59,6 @@ io.on("connection", (socket) => {
   console.log("sessionID", session.id);
 });
 
-
 const users = [
   {
     id: 1,
@@ -265,18 +264,15 @@ app.post("/logout", isAuthenticated, logout);
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  // Find the user in the array based on username and password
   const user = users.find(
-    (user) => user.username === username && user.password === password
+    (userToFind) =>
+      userToFind.username === username && userToFind.password === password
   );
 
-  if (!user) {
-    res.status(401).json({ message: "Invalid username or password" });
-    return;
-  }
-
-  if (user.status === "BLOCKED") {
-    res.status(403).json({ message: "Login not allowed" });
+  if (!user || user?.status === "BLOCKED") {
+    res.status(404).json({
+      status: 404,
+    });
     return;
   }
 
@@ -284,21 +280,14 @@ app.post("/login", (req, res) => {
   req.session.user = user; // Store user data in the session
   req.session.isAdmin = user.isAdmin; // Set isAdmin flag based on user's admin status
   res.cookie("isAuthenticated", true, { httpOnly: false });
+  res.cookie(req.session.user.isAdmin ? "isAdmin" : "isUser", true, {
+    httpOnly: false,
+  });
 
-  if (user.isAdmin) {
-    res.cookie("isAdmin", true, { httpOnly: false });
-    res.status(200).json({
-      message: "Admin logged in",
-      user: req.session.user,
-    });
-  } else {
-    res.cookie("isUser", true, { httpOnly: false });
-    res.status(200).json({
-      status: "ok",
-      message: "User logged in",
-      user: req.session.user,
-    });
-  }
+  res.status(200).json({
+    user: req.session.user,
+    status: 200,
+  });
 });
 
 app.get("/users", isAuthenticated, (req, res) => {
@@ -307,7 +296,9 @@ app.get("/users", isAuthenticated, (req, res) => {
   if (isAdmin) {
     // If the user is an admin, send all users' data
     res.status(200).json({
-      data: removePasswordFromUser(users).filter((userFind) => !userFind.isAdmin),
+      data: removePasswordFromUser(users).filter(
+        (userFind) => !userFind.isAdmin
+      ),
       message: "Admin user data retrieved successfully",
       user: user,
     });

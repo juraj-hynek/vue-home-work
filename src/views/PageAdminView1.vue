@@ -1,7 +1,7 @@
 <template>
     <page-layout :toastMessage="vmPage.toastMessage" :isToastOpen="vmPage.isToastOpen" :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick" :rightButtonClick="actions.rightButtonClick">
         <ion-searchbar v-model="vm.searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
-        <ion-list>
+        <!-- <ion-list>
             <ion-item>
                 <ion-label slot="start">
                     <ion-checkbox @ionChange="actions.selectAllUsers($event.target.checked)"
@@ -12,7 +12,7 @@
                         multiple</ion-button>
                 </ion-label>
             </ion-item>
-        </ion-list>
+        </ion-list> -->
         <ion-list>
             <ion-item v-for="(item, index) in userDataList" v-bind:key="index">
                 <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
@@ -46,7 +46,7 @@
                 </ion-header>
                 <user-admin-form :openToastModal ="actions.openToastModal"></user-admin-form>
             </ion-modal>
-            <ion-modal :is-open="vm.isOpenMultipleEditModal">
+            <!-- <ion-modal :is-open="vm.isOpenMultipleEditModal">
                 <ion-header>
                     <ion-toolbar>
                         <ion-title>Modal</ion-title>
@@ -57,7 +57,7 @@
                     </ion-toolbar>
                 </ion-header>
                 <modal-form-multiple-user-edit></modal-form-multiple-user-edit>
-            </ion-modal>
+            </ion-modal> -->
         </div>
         <!-- </ion-content> -->
     </page-layout>

@@ -252,12 +252,6 @@ export default createStore({
 
   actions: {},
   mutations: {
-    setUserRole(state, value) {
-      state.isUserAdmin = value;
-    },
-    setUserLoginStatus(state, value) {
-      state.isUserLogedIn = value;
-    },
 
     setLoading(state, value) {
       state.isLoading = value;

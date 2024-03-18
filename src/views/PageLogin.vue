@@ -73,7 +73,6 @@ const handleLogin = async () => {
     vmToastOpen.value = false;
     router.push(redirectTo);
   } catch (error) {
-    console.error('Error logging in:', error);
     vmToastOpen.value = true;
     vmToastMessage.value = error.message;
   }
