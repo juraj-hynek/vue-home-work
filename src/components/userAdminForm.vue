@@ -42,7 +42,7 @@
 
 <script setup type="ts">
 import { IonAlert, IonLabel, IonAvatar, IonInput, IonContent, IonList, IonItem, IonSelect, IonSelectOption, IonRange, IonFooter, IonToolbar, IonButton } from '@ionic/vue';
-import { reactive, ref, defineProps, onMounted } from 'vue';
+import { reactive, ref} from 'vue';
 import { useStore } from 'vuex';
 import { useUserActions } from '@/store/asyncActions';
 

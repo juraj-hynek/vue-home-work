@@ -57,12 +57,10 @@ import { useUserActions } from '@/store/asyncActions';
 import { useRouter } from "vue-router";
 import Cookies from "js-cookie";
 import { useStore } from 'vuex';
-// Promise-based delay function
+
 
 const appStore = useStore();
-const delay = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
+
 
 const { login } = useUserActions();
 const router = useRouter();
@@ -71,7 +69,6 @@ const formState = reactive({
   username: 'John',
   password: '123321',
 });
-
 
 const actions = {};
 
@@ -114,12 +111,10 @@ actions.handleLogin = async () => {
   }
 };
 
+
 actions.controlToastVisibility = () => {
   console.log('page toast is dismissed');
 };
-
-
-
 
 const isButtonLocked = formState.username.length === "" || formState.password.length === ""
 </script>

@@ -36,7 +36,7 @@
             </ion-item>
         </ion-list>
         <div>
-            <ion-modal :is-open="vm.ispenSingleEditModal">
+            <ion-modal :is-open="appStore.state.isModalOpen">
                 <ion-header>
                     <ion-toolbar>
                         <ion-title>Modal</ion-title>
@@ -46,7 +46,7 @@
                         </ion-buttons>
                     </ion-toolbar>
                 </ion-header>
-                <user-admin-form :openToastModal="actions.openToastModal"></user-admin-form>
+                <user-admin-form></user-admin-form>
             </ion-modal>
             <!-- <ion-modal :is-open="vm.isOpenMultipleEditModal">
                 <ion-header>
@@ -117,8 +117,7 @@ actions.openToastModal = (value) => {
 }
 
 actions.toggleSingleEditModal = ({ modalStatus, item = {} }) => {
-    // alert(JSON.stringify(item,null, 2))
-    vm.ispenSingleEditModal = modalStatus;
+    appStore.commit('setModal', { modalStatus: modalStatus })
     appStore.commit('selectUser', item);
 };
 

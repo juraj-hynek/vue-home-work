@@ -9,6 +9,7 @@
                   :closeModalHandler="actions.closeModalHandler" :isModalOpen="vm.isModalOpen">
                   <ion-img :src="selectedImage" v-if="selectedImage"></ion-img>
             </modal-dynamic>
+            <!-- <fab-controllers></fab-controllers> -->
       </page-layout>
 </template>
 
@@ -17,10 +18,10 @@ import { IonImg } from '@ionic/vue'
 import LoadImagesCreatePdf from '@/components/loadImagesCreatePdf.vue';
 import pageLayout from '@/components/pageLayout.vue';
 import ModalDynamic from '@/components/modalDynamic.vue';
+// import FabControllers from '@/components/fabComp.vue'
 import { reactive, ref } from 'vue';
 
 const selectedImage = ref('');
-
 
 const alertPropsConfig = reactive({
       alertHeader: '',
@@ -33,8 +34,6 @@ const vm = reactive({
       isModalOpen: false,
       isAlertOpen: false
 });
-
-
 
 const actions = {};
 actions.controlModalVisibility = ({

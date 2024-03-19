@@ -248,11 +248,17 @@ export default createStore({
       isToastVisible: false,
       toastMessage: "",
       toastDuration: 2000,
+
+      // modal
+      isModalOpen: false
     };
   },
 
   actions: {},
   mutations: {
+    setModal(state, {modalStatus}){
+      state.isModalOpen = modalStatus;
+    },
     setToast(state, { toastState, toastMessage }) {
       state.isToastVisible = toastState;
       state.toastMessage = toastMessage;

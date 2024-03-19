@@ -160,103 +160,6 @@ const users = [
     isAdmin: false,
     password: "123321",
   },
-  {
-    id: 11,
-    username: "John",
-    surname: "Doe",
-    status: "ACTIVE",
-    pdfImageLimit: 10,
-
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 12,
-    username: "Jane",
-    surname: "Smith",
-    status: "ACTIVE",
-    pdfImageLimit: 15,
-
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 13,
-    username: "Alice",
-    surname: "Johnson",
-    status: "ACTIVE",
-    pdfImageLimit: 5,
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 14,
-    username: "Robert",
-    surname: "Brown",
-    status: "ACTIVE",
-    pdfImageLimit: 8,
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 15,
-    username: "Emily",
-    surname: "Williams",
-    status: "ACTIVE",
-    pdfImageLimit: 12,
-
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 16,
-    username: "Michael",
-    surname: "Jones",
-    status: "ACTIVE",
-    pdfImageLimit: 7,
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 17,
-    username: "Jennifer",
-    surname: "Davis",
-    status: "ACTIVE",
-    pdfImageLimit: 6,
-
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 18,
-    username: "William",
-    surname: "Miller",
-    status: "ACTIVE",
-    pdfImageLimit: 9,
-
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 19,
-    username: "Sophia",
-    surname: "Taylor",
-    status: "ACTIVE",
-    pdfImageLimit: 11,
-
-    isAdmin: false,
-    password: "123321",
-  },
-  {
-    id: 20,
-    username: "Ethan",
-    surname: "Anderson",
-    status: "ACTIVE",
-    pdfImageLimit: 4,
-
-    isAdmin: false,
-    password: "123321",
-  },
 ];
 // Logout route
 app.post("/logout", isAuthenticated, logout);
@@ -296,35 +199,6 @@ app.post("/login", (req, res) => {
     });
   }, 2000); // Delay response by 2000ms
 });
-
-// app.post("/login", (req, res) => {
-//   const { username, password } = req.body;
-
-//   const user = users.find(
-//     (userToFind) =>
-//       userToFind.username === username && userToFind.password === password
-//   );
-
-//   if (!user || user?.status === "BLOCKED") {
-//     res.status(404).json({
-//       status: 404,
-//     });
-//     return;
-//   }
-
-//   req.session.authenticated = true;
-//   req.session.user = user; // Store user data in the session
-//   req.session.isAdmin = user.isAdmin; // Set isAdmin flag based on user's admin status
-//   res.cookie("isAuthenticated", true, { httpOnly: false });
-//   res.cookie(req.session.user.isAdmin ? "isAdmin" : "isUser", true, {
-//     httpOnly: false,
-//   });
-
-//   res.status(200).json({
-//     user: req.session.user,
-//     status: 200,
-//   });
-// });
 
 app.get("/users", isAuthenticated, (req, res) => {
   const { isAdmin, user } = req.session;
@@ -366,39 +240,83 @@ app.put("/users", isAuthenticated, (req, res) => {
   const index = users.findIndex((user) => user.id === updatedUser.id);
 
   if (index > -1) {
-    if (isAdmin) {
-      users[index] = { ...users[index], ...updatedUser }; // edit any props of user
-
-      console.log("session.id/update", req.session.id);
-
-      io.emit("update", users[index] || {});
-      const jsonConfig = {
-        status: "ok",
-        data: removePasswordFromUser(users),
-        user: user,
-        message: "User updated",
-      };
-      res.status(200).json(jsonConfig);
-    } else {
-      // non-admin user can only edit pdfImageQt
-      io.emit("update", {
-        users: [],
-        user: users[index],
-      });
-
-      const jsonConfig = {
-        status: "ok",
-        message: "User updated",
-        user: user,
-      };
-      res.status(200).json(jsonConfig);
-    }
+    setTimeout(() => {
+      // Introduce delay here
+      if (isAdmin) {
+        users[index] = { ...users[index], ...updatedUser }; // edit any props of user
+        io.emit("update", users[index] || {});
+        const jsonConfig = {
+          status: "ok",
+          data: removePasswordFromUser(users).filter((user) => !user.isAdmin),
+          user: user,
+          message: "User updated",
+        };
+        res.status(200).json(jsonConfig);
+      } else {
+        // Non-admin user cannot update users, destroy session
+        req.session.destroy((err) => {
+          if (err) {
+            console.error("Error destroying session:", err);
+            res.status(500).json({
+              message: "Internal Server Error",
+            });
+          } else {
+            res.status(200).json({
+              message: "Session destroyed for non-admin user",
+              logout: true,
+            });
+          }
+        });
+      }
+    }, 2000); // Delay response by 2000ms
   } else {
+    // User not found
     res.status(404).json({
       message: "Invalid User",
+      logout: true,
     });
   }
 });
+
+// app.put("/users", isAuthenticated, (req, res) => {
+//   const body = req.body;
+//   const updatedUser = body;
+//   const user = req.session.user;
+//   const isAdmin = req.session.user.isAdmin;
+
+//   const index = users.findIndex((user) => user.id === updatedUser.id);
+
+//   if (index > -1) {
+//     if (isAdmin) {
+//       users[index] = { ...users[index], ...updatedUser }; // edit any props of user
+//       io.emit("update", users[index] || {});
+//       const jsonConfig = {
+//         status: "ok",
+//         data: removePasswordFromUser(users),
+//         user: user,
+//         message: "User updated",
+//       };
+//       res.status(200).json(jsonConfig);
+//     } else {
+//       // non-admin user can only edit pdfImageQt
+//       io.emit("update", {
+//         users: [],
+//         user: users[index],
+//       });
+
+//       const jsonConfig = {
+//         status: "ok",
+//         message: "User updated",
+//         user: user,
+//       };
+//       res.status(200).json(jsonConfig);
+//     }
+//   } else {
+//     res.status(404).json({
+//       message: "Invalid User",
+//     });
+//   }
+// });
 
 server.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);

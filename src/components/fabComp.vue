@@ -1,32 +1,28 @@
 <template>
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button>
-      <ion-icon :icon="chevronUpCircle"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button>
-        <ion-icon :icon="document"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button>
-        <ion-icon :icon="colorPalette"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button>
-        <ion-icon :icon="globe"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
+  <ion-list>
+    <ion-item>
+      <ion-icon aria-hidden="true" :icon="airplane" slot="start"></ion-icon>
+      <ion-icon aria-hidden="true" :icon="airplane" slot="end"></ion-icon>
+    </ion-item>
+  </ion-list>
 </template>
-  
-<script setup lang="ts">
-import { IonContent, IonFab, IonFabButton, IonFabList, IonHeader, IonIcon, IonTitle, IonToolbar } from '@ionic/vue';
-import {
-  //   chevronDownCircle,
-  //   chevronForwardCircle,
-  chevronUpCircle,
-  colorPalette,
-  document,
-  globe,
-} from 'ionicons/icons';
 
+<script lang="ts">
+  import { IonAvatar, IonItem, IonLabel, IonList, IonIcon } from '@ionic/vue';
+  import { defineComponent } from 'vue';
+  import { airplane, bluetooth, call, wifi } from 'ionicons/icons';
 
+  export default defineComponent({
+
+    components: {
+      IonAvatar,
+      IonItem,
+      IonLabel,
+      IonList,
+      IonIcon,
+    },
+    setup() {
+      return { airplane, bluetooth, call, wifi };
+    },
+  });
 </script>

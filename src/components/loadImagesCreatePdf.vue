@@ -1,34 +1,33 @@
 <template>
-    <ion-buttons>
-        <ion-buttons slot="secondary">
-            <ion-button>
-                <label class="flex">
-                    <ion-icon slot="icon-only" :icon="cloudUpload"></ion-icon>
-                    Upload image(s)
-                    <input class="hidden" multiple type="file" :accept="acceptFiles" @change="handleFileUpload" />
+    <div>
+        <ion-list>
+            <ion-item>
+                <label>
+                    <ion-icon style="font-size: 24px;" aria-hidden="true" :icon="cloudUpload" slot="start"></ion-icon>
+                    <input multiple @change="handleFileUpload" type="file" accept="images/*" hidden />
                 </label>
-            </ion-button>
-            <ion-button slot="end" v-if="isButtoMakePDFVisible" @click="convertToPDF">Convert to PDF</ion-button>
-        </ion-buttons>
-    </ion-buttons>
-    <ion-grid>
-        <ion-row>
-            <ion-col size="6" size-md="4" size-lg="2"
-                @click="controlModalVisibility({ modalStatus: true, item: image })" v-for="(image, index) in imageUrls"
-                :key="index">
-                <ion-img :src="image" v-if="image"></ion-img>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+                <ion-icon  aria-hidden="true" :icon="sendSharp" slot="end"></ion-icon>
+            </ion-item>
+        </ion-list>
+        <ion-grid>
+            <ion-row>
+                <ion-col size="6" size-md="4" size-lg="2"
+                    @click="controlModalVisibility({ modalStatus: true, item: image })"
+                    v-for="(image, index) in imageUrls" :key="index">
+                    <ion-img :src="image" v-if="image"></ion-img>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+    </div>
 </template>
-
 <script type="ts">
-import { IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons } from '@ionic/vue';
-import { cloudUpload } from 'ionicons/icons';
-
+import { IonGrid, IonRow, IonCol, IonImg, IonItem, IonList, IonIcon } from '@ionic/vue';
 import { computed, defineComponent, ref, watch, } from 'vue';
+import { airplane, bluetooth, call, wifi, cloudUpload, sendSharp } from 'ionicons/icons';
 import jsPDF from 'jspdf';
 import { useStore } from 'vuex';
+
 
 export default defineComponent({
     name: 'LoadImagesCreatePdf',
@@ -39,7 +38,9 @@ export default defineComponent({
         alertHandler: Function
     },
     components: {
-        IonGrid, IonRow, IonCol, IonImg, IonButton, IonButtons,
+        IonGrid, IonRow, IonCol, IonImg, IonItem, IonList, IonIcon
+
+
     },
     setup() {
         const appStore = useStore();
@@ -74,7 +75,6 @@ export default defineComponent({
         function _handleFileUpload({ target }) {
             const files = target?.files || [];
             console.log(files.length)
-
             /**
              * VALIDATION
              */
@@ -90,7 +90,6 @@ export default defineComponent({
                 alert(`Only ${pdfImageLimit.value} images are allowed to upload`)
                 return;
             }
-
             /**
              * CONVERT UPLOADED IMAGES INTO DATA STRUCTURE
              */
@@ -101,17 +100,14 @@ export default defineComponent({
                 reader.readAsDataURL(file);
             }
         }
-
-        watch(appStore.state, () => {
-            console.log("appStore.state", appStore.state.user.pdfImageLimit)
-        });
-
-
+     
         return {
             imageUrls,
             handleFileUpload,
             convertToPDF,
             cloudUpload,
+            airplane, bluetooth, call, wifi,
+            sendSharp
 
         }
     }
@@ -128,3 +124,23 @@ export default defineComponent({
     visibility: hidden;
 }
 </style>
+
+
+<!-- <ion-row>
+            <ion-col size="6">
+              <ion-button>
+                <label class="">
+                    <ion-icon slot="icon-only" :icon="cloudUpload"></ion-icon>
+                    Upload image(s)
+                    <input class="hidden" multiple type="file" :accept="acceptFiles" @change="handleFileUpload" />
+                </label>
+              </ion-button>
+            </ion-col>
+            <ion-col size="6">
+               
+                <ion-button @click="convertToPDF">
+                    <ion-icon  :icon="cloudUpload">
+                
+            </ion-icon>Convert to PDF</ion-button>
+            </ion-col>
+        </ion-row> -->
