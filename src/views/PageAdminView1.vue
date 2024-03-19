@@ -16,8 +16,8 @@
             </ion-item>
         </ion-list> -->
         <ion-list>
-            <ion-item-sliding>
-                <ion-item v-for="(item, index) in userDataList" v-bind:key="index">
+            <ion-item-sliding v-for="(item, index) in userDataList" v-bind:key="index">
+                <ion-item>
                     <!-- <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
                     @ionChange="actions.selectSingleUser(item)" /> -->
                     <ion-avatar>
@@ -28,10 +28,7 @@
                     <ion-badge slot="end" :color="actions.manageStatusColor(item.status)">{{
         item.status
     }}</ion-badge>
-                    <!-- <ion-button slot="end" fill="outline">
-                        Edit
-                        <ion-icon :icon="create"></ion-icon>
-                    </ion-button> -->
+
                 </ion-item>
                 <ion-item-options>
                     <ion-item-option @click="
@@ -40,7 +37,8 @@
                         <!-- <ion-icon :icon="create"></ion-icon> -->
                         Edit
                     </ion-item-option>
-                    <ion-item-option color="danger">Delete</ion-item-option>
+                    <ion-item-option
+                        color="danger">Delete</ion-item-option>
                 </ion-item-options>
             </ion-item-sliding>
         </ion-list>
