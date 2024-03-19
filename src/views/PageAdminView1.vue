@@ -16,24 +16,33 @@
             </ion-item>
         </ion-list> -->
         <ion-list>
-            <ion-item v-for="(item, index) in userDataList" v-bind:key="index">
-                <!-- <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
+            <ion-item-sliding>
+                <ion-item v-for="(item, index) in userDataList" v-bind:key="index">
+                    <!-- <ion-checkbox v-if="true" slot="start" :checked="item['selected']"
                     @ionChange="actions.selectSingleUser(item)" /> -->
-                <ion-avatar>
-                    <img alt="Silhouette of a person's head"
-                        src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-                </ion-avatar>
-                <ion-text>{{ item.username }}</ion-text>
-                <ion-badge slot="end" :color="actions.manageStatusColor(item.status)">{{
+                    <ion-avatar>
+                        <img alt="Silhouette of a person's head"
+                            src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                    </ion-avatar>
+                    <ion-text>{{ item.username }}</ion-text>
+                    <ion-badge slot="end" :color="actions.manageStatusColor(item.status)">{{
         item.status
     }}</ion-badge>
-                <ion-button slot="end" @click="
-    actions.toggleSingleEditModal({ modalStatus: true, item })
-        " fill="outline">
-                    Edit
-                    <ion-icon :icon="create"></ion-icon>
-                </ion-button>
-            </ion-item>
+                    <!-- <ion-button slot="end" fill="outline">
+                        Edit
+                        <ion-icon :icon="create"></ion-icon>
+                    </ion-button> -->
+                </ion-item>
+                <ion-item-options>
+                    <ion-item-option @click="
+        actions.toggleSingleEditModal({ modalStatus: true, item })
+        ">
+                        <!-- <ion-icon :icon="create"></ion-icon> -->
+                        Edit
+                    </ion-item-option>
+                    <ion-item-option color="danger">Delete</ion-item-option>
+                </ion-item-options>
+            </ion-item-sliding>
         </ion-list>
         <div>
             <ion-modal :is-open="appStore.state.ui.isModalOpen">
@@ -80,7 +89,9 @@ import {
     IonHeader,
     IonToolbar,
     IonTitle,
-    onIonViewDidEnter
+    onIonViewDidEnter,
+    IonItemSliding,
+    IonItemOption, IonItemOptions,
 } from "@ionic/vue";
 import { create } from "ionicons/icons";
 import UserAdminForm from "@/components/userAdminForm.vue";
@@ -174,7 +185,7 @@ actions.leftButtonClick = () => {
 };
 const userDataList = computed(actions.searchInUsers);
 
-onIonViewDidEnter(()=>{
+onIonViewDidEnter(() => {
     console.log('PageAdminView1 in dom')
 });
 </script>
