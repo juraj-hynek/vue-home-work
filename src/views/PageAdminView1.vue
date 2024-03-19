@@ -71,22 +71,19 @@ import {
     IonSearchbar,
     IonBadge,
     IonIcon,
-    IonCheckbox,
     IonAvatar,
     IonItem,
-    IonLabel,
     IonList,
     IonButtons,
     IonButton,
     IonModal,
     IonHeader,
     IonToolbar,
-
     IonTitle,
+    onIonViewDidEnter
 } from "@ionic/vue";
 import { create } from "ionicons/icons";
 import UserAdminForm from "@/components/userAdminForm.vue";
-// import ModalFormMultipleUserEdit from "@/components/modalFormMultipleUserEdit.vue";
 import PageLayout from "@/components/pageLayout.vue";
 import { computed, reactive } from "vue";
 import { useStore } from "vuex";
@@ -176,6 +173,10 @@ actions.leftButtonClick = () => {
     router.push('/login')
 }
 const userDataList = computed(actions.searchInUsers);
+
+onIonViewDidEnter(()=>{
+    console.log('PageAdminView1 in dom')
+});
 </script>
 
 <style scoped></style>

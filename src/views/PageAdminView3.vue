@@ -8,6 +8,7 @@
 <script setup type="ts">
 import pageLayout from '@/components/pageLayout.vue';
 import { reactive, } from 'vue';
+import { onIonViewDidEnter } from '@ionic/vue'
 
 
 const alertPropsConfig = reactive({
@@ -46,5 +47,8 @@ actions.alertHandler = ({ title, subTitle, message }) => {
 actions.controlAlertVisibility = (alertVisibility) => {
   vm.isAlertOpen = alertVisibility;
 };
+onIonViewDidEnter(() => {
+  console.log('PageAdminView3 in dom')
+});
 
 </script>

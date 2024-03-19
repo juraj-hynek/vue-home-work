@@ -14,7 +14,7 @@
 </template>
 
 <script setup type="ts">
-import { IonImg } from '@ionic/vue'
+import { IonImg, onIonViewDidEnter } from '@ionic/vue'
 import LoadImagesCreatePdf from '@/components/loadImagesCreatePdf.vue';
 import pageLayout from '@/components/pageLayout.vue';
 import ModalDynamic from '@/components/modalDynamic.vue';
@@ -58,5 +58,9 @@ actions.alertHandler = ({ title, subTitle, message }) => {
 actions.controlAlertVisibility = (alertVisibility) => {
       vm.isAlertOpen = alertVisibility;
 };
+
+onIonViewDidEnter(()=>{
+    console.log('PageAdminView3 in dom')
+});
 
 </script>
