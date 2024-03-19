@@ -1,9 +1,18 @@
 <template>
-    <ion-page>
+    <ion-menu content-id="main-content">
+        <ion-header>
+            <ion-toolbar>
+                <ion-title>Menu Content</ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">This is the menu content.</ion-content>
+    </ion-menu>
+    <ion-page id="main-content">
         <ion-header v-if="true">
             <ion-toolbar>
                 <!-- Left side button -->
                 <ion-buttons slot="start">
+                    <ion-menu-button></ion-menu-button>
                     <ion-button @click="leftButtonClick">
                         <ion-icon :icon="leftButtonIcon"></ion-icon>
                     </ion-button>
@@ -32,7 +41,7 @@
     </ion-page>
 </template>
 <script>
-import { IonAlert, IonProgressBar, IonLoading, IonToast, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon } from '@ionic/vue';
+import { IonMenu,IonMenuButton, IonAlert, IonProgressBar, IonLoading, IonToast, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon } from '@ionic/vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -49,7 +58,9 @@ export default defineComponent({
         IonToast,
         IonProgressBar,
         IonLoading,
-        IonAlert
+        IonAlert,
+        IonMenu,
+        IonMenuButton
     },
     props: {
         pageTitle: String,
