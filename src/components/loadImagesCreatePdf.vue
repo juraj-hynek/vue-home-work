@@ -3,10 +3,10 @@
         <ion-list>
             <ion-item>
                 <label>
-                    <ion-icon style="font-size: 24px;" aria-hidden="true" :icon="cloudUpload" slot="start"></ion-icon>
+                    <ion-icon style="font-size: 24px;" aria-hidden="true" :icon="documentOutline" slot="start"></ion-icon>
                     <input multiple @change="handleFileUpload" type="file" accept="images/*" hidden />
                 </label>
-                <ion-icon  aria-hidden="true" :icon="sendSharp" slot="end"></ion-icon>
+                <ion-icon @click="convertToPDF"  aria-hidden="true" :icon="bookOutline" slot="end"></ion-icon>
             </ion-item>
         </ion-list>
         <ion-grid>
@@ -22,9 +22,9 @@
     </div>
 </template>
 <script type="ts">
-import { IonGrid, IonRow, IonCol, IonImg, IonItem, IonList, IonIcon } from '@ionic/vue';
+import { IonGrid, IonRow, IonCol, IonImg, IonItem, IonList, IonIcon, loadingController } from '@ionic/vue';
 import { computed, defineComponent, ref, watch, } from 'vue';
-import { airplane, bluetooth, call, wifi, cloudUpload, sendSharp } from 'ionicons/icons';
+import {  documentOutline, bookOutline } from 'ionicons/icons';
 import jsPDF from 'jspdf';
 import { useStore } from 'vuex';
 
@@ -52,10 +52,20 @@ export default defineComponent({
 
         const pdfImageLimit = computed(() => appStore.state.user.pdfImageLimit)
 
+        // TO DO - use loader when processing pdf upload or pdf creation
+        const showLoading = async () => {
+        const loading = await loadingController.create({
+          message: 'Dismissing after 3 seconds...',
+          duration: 3000,
+        });
+
+        loading.present();
+      };
+
 
         function _convertImagesToPdf() {
             if (!imageUrls.value.length) {
-                // controlAlertVisibility({ modalStatus: true, alertMessage: MESSAGE_IMAGES_NOT_UPLOADED });
+                alert("Upload images first")
                 return;
             }
             const doc = new jsPDF();
@@ -73,6 +83,7 @@ export default defineComponent({
             doc.save('images.pdf');
         }
         function _handleFileUpload({ target }) {
+          
             const files = target?.files || [];
             console.log(files.length)
             /**
@@ -105,10 +116,8 @@ export default defineComponent({
             imageUrls,
             handleFileUpload,
             convertToPDF,
-            cloudUpload,
-            airplane, bluetooth, call, wifi,
-            sendSharp
-
+            documentOutline,
+            bookOutline
         }
     }
 })

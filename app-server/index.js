@@ -172,6 +172,12 @@ app.post("/login", (req, res) => {
       userToFind.username === username && userToFind.password === password
   );
 
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
+  }
+
   if (!user || user?.status === "BLOCKED") {
     // If user is not found or blocked, return a 404 status with a delay
     setTimeout(() => {
