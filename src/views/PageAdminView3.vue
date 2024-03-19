@@ -21,19 +21,16 @@
         <div class="box box2">Box 2</div>
       </div>
     </div>
+    <some-temp></some-temp>
   </page-layout>
 </template>
 
 <script setup type="ts">
 import pageLayout from '@/components/pageLayout.vue';
-import { ref } from 'vue';
-import { onIonViewDidEnter } from '@ionic/vue'
+import { onIonViewDidEnter } from '@ionic/vue';
+import { defineComponent, ref } from 'vue';
 
-onIonViewDidEnter(() => {
-  console.log('PageAdminView3 in dom')
-});
+
 
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

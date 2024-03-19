@@ -60,7 +60,7 @@ const appStore = useStore();
 
 // Initialize form data
 const formData = reactive({
-    ...appStore.state.selectedUser
+    ...appStore.state.user.selectedUser
 });
 
 const alertButtons = ['OK'];

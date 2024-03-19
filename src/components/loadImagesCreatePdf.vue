@@ -50,7 +50,7 @@ export default defineComponent({
         const handleFileUpload = _handleFileUpload;
         const convertToPDF = _convertImagesToPdf;
 
-        const pdfImageLimit = computed(() => appStore.state.user.pdfImageLimit)
+        const pdfImageLimit = computed(() => appStore.state.user.user.pdfImageLimit)
 
         // TO DO - use loader when processing pdf upload or pdf creation
         const showLoading = async () => {

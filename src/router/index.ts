@@ -123,11 +123,3 @@ const router = createRouter({
 });
 
 export default router;
-
-// login logic
-// After successful authentication
-// Cookies.set('isAuthenticated', true);
-
-// logout logic
-// After logout
-// Cookies.remove('isAuthenticated');

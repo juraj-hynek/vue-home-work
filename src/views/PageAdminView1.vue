@@ -1,12 +1,12 @@
 <template>
-    <page-layout :toastMessage="appStore.state.toastMessage" :isToastOpen="appStore.state.isToastVisible"
+    <page-layout :toastMessage="appStore.state.ui.toastMessage" :isToastOpen="appStore.state.ui.isToastVisible"
         :leftButtonIcon="arrowBack" :leftButtonClick="actions.leftButtonClick"
         :rightButtonClick="actions.rightButtonClick">
         <ion-searchbar v-model="vm.searchValue" placeholder="Seach by user name, surname, status"></ion-searchbar>
         <!-- <ion-list>
             <ion-item>
                 <ion-label slot="start">
-                    <ion-checkbox @ionChange="actions.selectAllUsers($event.target.checked)"
+                    <ion-checkbox @ionChange="actions.selectEveryUser($event.target.checked)"
                         slot="start">Select</ion-checkbox>
                 </ion-label>
                 <ion-label slot="end">
@@ -36,7 +36,7 @@
             </ion-item>
         </ion-list>
         <div>
-            <ion-modal :is-open="appStore.state.isModalOpen">
+            <ion-modal :is-open="appStore.state.ui.isModalOpen">
                 <ion-header>
                     <ion-toolbar>
                         <ion-title>Modal</ion-title>
@@ -111,7 +111,7 @@ const actions = {};
 actions.openToastModal = (value) => {
     vmPage.isToastOpen = value;
     vmPage.toastMessage = 'Moment ...'
-}
+};
 
 actions.toggleSingleEditModal = ({ modalStatus, item = {} }) => {
     appStore.commit('setModal', { modalStatus: modalStatus })
@@ -122,19 +122,19 @@ actions.toggleMultipleEditModal = ({ modalStatus }) => {
     vm.isOpenMultipleEditModal = modalStatus;
 };
 
-actions.selectMultipleUsers = () => {
-    appStore.commit('selectMultipleUsers', user);
-}
+actions.selectSomeUsers = () => {
+    appStore.commit('selectSomeUsers', user);
+};
 
 
-actions.selectAllUsers = (checked) => {
-    console.log('selectAllUsers', checked)
-    appStore.commit('selectAllUsers', true);
-}
+actions.selectEveryUser = (checked) => {
+    console.log('selectEveryUser', checked)
+    appStore.commit('selectEveryUser', true);
+};
 
 actions.selectSingleUser = (user) => {
     appStore.commit('selectUser', user);
-}
+};
 
 
 actions.manageStatusColor = (status) => {
@@ -150,10 +150,10 @@ actions.manageStatusColor = (status) => {
         default:
             return 'PRIMARY'
     }
-}
+};
 actions.searchInUsers = () => {
     const lowerCaseQuery = vm.searchValue.toLowerCase().trim();
-    return appStore.state.users.filter(obj => {
+    return appStore.state.user.users.filter(obj => {
         for (const prop in obj) {
             if (lowerCaseQuery === '' || Object.prototype.hasOwnProperty.call(obj, prop)) {
                 const value = obj[prop];
@@ -164,14 +164,14 @@ actions.searchInUsers = () => {
         }
         return false; // If no property contains the query, return false
     });
-}
+};
 actions.rightButtonClick = () => {
     alert();
-}
+};
 
 actions.leftButtonClick = () => {
     router.push('/login')
-}
+};
 const userDataList = computed(actions.searchInUsers);
 
 onIonViewDidEnter(()=>{

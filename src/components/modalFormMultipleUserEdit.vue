@@ -33,7 +33,7 @@ const appStore = useStore();
 
 // Initialize form data
 const formData = ref({
-    ...appStore.state.selectedUserProps
+   
 });
 
 // Handle input change

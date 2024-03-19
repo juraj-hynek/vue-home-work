@@ -1,6 +1,6 @@
 <template>
-  <page-layout pageTitle="Login" :toastMessage="appStore.state.toastMessage"
-    :isToastOpen="appStore.state.isToastVisible" :controlToastVisibility="controlToastVisibility">
+  <page-layout pageTitle="Login" :toastMessage="appStore.state.ui.toastMessage"
+    :isToastOpen="appStore.state.ui.isToastVisible" :controlToastVisibility="controlToastVisibility">
     <ion-item>
       <ion-label position="floating">Username</ion-label>
       <ion-input id="username" @ionInput="actions.ionInputHandler('username', $event.target.value)"
