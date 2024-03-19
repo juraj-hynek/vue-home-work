@@ -13,13 +13,17 @@
   </template>
   
   <script lang="ts">
-    import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonProgressBar } from '@ionic/vue';
+    import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonProgressBar, onIonViewDidEnter } from '@ionic/vue';
   import { defineComponent } from 'vue';
   
     export default defineComponent({
       name: 'PageUserView1',
       components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonProgressBar },
     });
+
+    onIonViewDidEnter(() => {
+  console.log('PageAdminView3 in dom')
+});
   </script>
   <style scoped>
     .example-content {
