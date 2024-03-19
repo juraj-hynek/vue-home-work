@@ -3,10 +3,11 @@
         <ion-list>
             <ion-item>
                 <label>
-                    <ion-icon style="font-size: 24px;" aria-hidden="true" :icon="documentOutline" slot="start"></ion-icon>
+                    <ion-icon style="font-size: 24px;" aria-hidden="true" :icon="documentOutline"
+                        slot="start"></ion-icon>
                     <input multiple @change="handleFileUpload" type="file" accept="images/*" hidden />
                 </label>
-                <ion-icon @click="convertToPDF"  aria-hidden="true" :icon="bookOutline" slot="end"></ion-icon>
+                <ion-icon @click="convertToPDF" aria-hidden="true" :icon="bookOutline" slot="end"></ion-icon>
             </ion-item>
         </ion-list>
         <ion-grid>
@@ -24,7 +25,7 @@
 <script type="ts">
 import { IonGrid, IonRow, IonCol, IonImg, IonItem, IonList, IonIcon, loadingController } from '@ionic/vue';
 import { computed, defineComponent, ref, watch, } from 'vue';
-import {  documentOutline, bookOutline } from 'ionicons/icons';
+import { documentOutline, bookOutline } from 'ionicons/icons';
 import jsPDF from 'jspdf';
 import { useStore } from 'vuex';
 
@@ -54,13 +55,13 @@ export default defineComponent({
 
         // TO DO - use loader when processing pdf upload or pdf creation
         const showLoading = async () => {
-        const loading = await loadingController.create({
-          message: 'Dismissing after 3 seconds...',
-          duration: 3000,
-        });
+            const loading = await loadingController.create({
+                message: 'Dismissing after 3 seconds...',
+                duration: 3000,
+            });
 
-        loading.present();
-      };
+            loading.present();
+        };
 
 
         function _convertImagesToPdf() {
@@ -82,36 +83,74 @@ export default defineComponent({
             });
             doc.save('images.pdf');
         }
-        function _handleFileUpload({ target }) {
-          
+
+        async function _handleFileUpload({ target }) {
             const files = target?.files || [];
-            console.log(files.length)
+            console.log(files.length);
+
             /**
              * VALIDATION
              */
-
             if (!files.length) {
                 console.warn('_handleFileUpload files has not length prop');
                 return;
             }
+
             /**
-            * VALIDATION + LIMITATION FOR IMAGES QTY TO UPLOAD LATER
-            */
+             * VALIDATION + LIMITATION FOR IMAGES QTY TO UPLOAD LATER
+             */
             if (files.length > pdfImageLimit.value) {
-                alert(`Only ${pdfImageLimit.value} images are allowed to upload`)
+                alert(`Only ${pdfImageLimit.value} images are allowed to upload`);
                 return;
             }
+
             /**
              * CONVERT UPLOADED IMAGES INTO DATA STRUCTURE
              */
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                const reader = new FileReader();
-                reader.onload = () => imageUrls.value.push(reader.result);
-                reader.readAsDataURL(file);
+                await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        imageUrls.value.push(reader.result);
+                        resolve();
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
             }
         }
-     
+
+        // function _handleFileUpload({ target }) {
+
+        //     const files = target?.files || [];
+        //     console.log(files.length)
+        //     /**
+        //      * VALIDATION
+        //      */
+
+        //     if (!files.length) {
+        //         console.warn('_handleFileUpload files has not length prop');
+        //         return;
+        //     }
+        //     /**
+        //     * VALIDATION + LIMITATION FOR IMAGES QTY TO UPLOAD LATER
+        //     */
+        //     if (files.length > pdfImageLimit.value) {
+        //         alert(`Only ${pdfImageLimit.value} images are allowed to upload`)
+        //         return;
+        //     }
+        //     /**
+        //      * CONVERT UPLOADED IMAGES INTO DATA STRUCTURE
+        //      */
+        //     for (let i = 0; i < files.length; i++) {
+        //         const file = files[i];
+        //         const reader = new FileReader();
+        //         reader.onload = () => imageUrls.value.push(reader.result);
+        //         reader.readAsDataURL(file);
+        //     }
+        // }
+
         return {
             imageUrls,
             handleFileUpload,
