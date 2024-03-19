@@ -1,18 +1,19 @@
 <template>
-    <ion-menu content-id="main-content">
+    <!-- <ion-menu content-id="main-content">
         <ion-header>
             <ion-toolbar>
                 <ion-title>Menu Content</ion-title>
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">This is the menu content.</ion-content>
-    </ion-menu>
+    </ion-menu> -->
     <ion-page id="main-content">
         <ion-header v-if="true">
             <ion-toolbar>
                 <!-- Left side button -->
+                <!-- <ion-menu-button></ion-menu-button> -->
                 <ion-buttons slot="start">
-                    <ion-menu-button></ion-menu-button>
+                   
                     <ion-button @click="leftButtonClick">
                         <ion-icon :icon="leftButtonIcon"></ion-icon>
                     </ion-button>
