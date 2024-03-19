@@ -22,7 +22,7 @@
     });
 
     onIonViewDidEnter(() => {
-  console.log('PageAdminView3 in dom')
+  console.log('PageUserView3 in dom')
 });
   </script>
   <style scoped>
