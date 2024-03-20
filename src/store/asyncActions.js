@@ -49,43 +49,9 @@ export const useUserActions = () => {
       throw error; // Re-throw the error for catching in another async function
     }
   };
-  const login = async (formState) => {
-    try {
-      const response = await fetch(`${URL_BASE}/login`, {
-        method: "POST",
-        credentials: "include",
-        headers: headers,
-        body: JSON.stringify(formState),
-      });
-
-      if (!response.ok) {
-        // If response is not ok, throw an error with a meaningful message
-        throw new Error(
-          "Failed to log in. Please check your credentials and try again."
-        );
-      }
-
-      const data = await response.json();
-
-      // Update user data in the store upon successful login
-      store.commit("setUser", {
-        data: data.user || {},
-      });
-
-      // Return data upon successful login
-      return data;
-    } catch (error) {
-      // Log the error for debugging purposes
-      console.error("Error logging in:", error.message);
-
-      // Re-throw the error for catching in another async function
-      throw error;
-    }
-  };
 
   return {
     updateUser,
     fetchUsers,
-    login,
   };
 };
