@@ -172,23 +172,3 @@ export default defineComponent({
     visibility: hidden;
 }
 </style>
-
-
-<!-- <ion-row>
-            <ion-col size="6">
-              <ion-button>
-                <label class="">
-                    <ion-icon slot="icon-only" :icon="cloudUpload"></ion-icon>
-                    Upload image(s)
-                    <input class="hidden" multiple type="file" :accept="acceptFiles" @change="handleFileUpload" />
-                </label>
-              </ion-button>
-            </ion-col>
-            <ion-col size="6">
-               
-                <ion-button @click="convertToPDF">
-                    <ion-icon  :icon="cloudUpload">
-                
-            </ion-icon>Convert to PDF</ion-button>
-            </ion-col>
-        </ion-row> -->

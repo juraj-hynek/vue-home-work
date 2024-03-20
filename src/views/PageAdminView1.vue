@@ -15,6 +15,7 @@
                 </ion-label>
             </ion-item>
         </ion-list> -->
+        <h4>Slide left to open options</h4>
         <ion-list>
             <ion-item-sliding v-for="(item, index) in userDataList" v-bind:key="index">
                 <ion-item>
@@ -32,13 +33,12 @@
                 </ion-item>
                 <ion-item-options>
                     <ion-item-option @click="
-        actions.toggleSingleEditModal({ modalStatus: true, item })
+    actions.toggleSingleEditModal({ modalStatus: true, item })
         ">
                         <!-- <ion-icon :icon="create"></ion-icon> -->
                         Edit
                     </ion-item-option>
-                    <ion-item-option
-                        color="danger">Delete</ion-item-option>
+                    <ion-item-option color="danger">Delete</ion-item-option>
                 </ion-item-options>
             </ion-item-sliding>
         </ion-list>
@@ -77,7 +77,6 @@ import {
     IonText,
     IonSearchbar,
     IonBadge,
-    IonIcon,
     IonAvatar,
     IonItem,
     IonList,
@@ -91,7 +90,7 @@ import {
     IonItemSliding,
     IonItemOption, IonItemOptions,
 } from "@ionic/vue";
-import { create } from "ionicons/icons";
+
 import UserAdminForm from "@/components/userAdminForm.vue";
 import PageLayout from "@/components/pageLayout.vue";
 import { computed, reactive } from "vue";

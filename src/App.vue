@@ -5,24 +5,23 @@
 </template>
 
 <script lang="ts">
-import { IonApp, IonRouterOutlet } from '@ionic/vue';
-import { defineComponent, onMounted, onUnmounted } from 'vue';
+import { IonApp, IonRouterOutlet, onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
+import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'App',
   components: { IonApp, IonRouterOutlet },
   setup() {
     const popStateHandler = () => {
-    //  console.log('changed')
+      //  console.log('changed')
     };
 
-    onMounted(() => {
+    onIonViewDidEnter(() => {
       window.addEventListener('popstate', popStateHandler);
     });
 
-    onUnmounted(() => {
+    onIonViewDidLeave(() => {
       window.removeEventListener('popstate', popStateHandler);
     });
-
   }
 });
 </script>
