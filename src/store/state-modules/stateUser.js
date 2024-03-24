@@ -86,7 +86,7 @@ function tryMe(fn) {
   };
 }
 const actions = {
-  async userLogIn({ commit }, formState) {
+  async loginWithNameAndPassword({ commit }, formState) {
     try {
       const response = await fetch(`${URL_BASE}/login`, {
         method: "POST",

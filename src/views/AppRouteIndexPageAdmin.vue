@@ -21,7 +21,7 @@ import pageLayout from '@/components/pageLayout.vue';
 import { useStore } from 'vuex';
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Connect to the WebSocket server
+const socket = io(getWebSocketURL()); // Connect to the WebSocket server
 
 const appStore = useStore();
 
@@ -30,21 +30,16 @@ const tabsConfig = getTabConfig();
 const router = useRouter();
 const tabsTitles = ref(tabsConfig || []);
 
-const fetchData = (async () => {
+onIonViewDidEnter(async () => {
   try {
     await appStore.dispatch('fetchUserDataAfterLogin');
     router.push(appStore.state.user.path);
+    socket.on("update", (updatedData) => {
+      console.log("Received updated data:", updatedData);
+    });
   } catch (error) {
     console.log(error.message);
   }
-});
-
-
-onIonViewDidEnter(() => {
-  fetchData();
-  socket.on("update", (updatedData) => {
-    console.log("Received updated data:", updatedData);
-  });
 });
 
 
@@ -69,5 +64,9 @@ function getTabConfig() {
       icon: radio
     }
   ]
+}
+
+function getWebSocketURL() {
+  return "http://localhost:3000";
 }
 </script>

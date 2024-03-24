@@ -51,7 +51,7 @@ actions.ionInputHandler = (inputName, value) => {
 actions.handleLogin = async () => {
   try {
     appStore.commit('setToast', { toastState: true, toastMessage: '... Uno Momento :0)' })
-    await appStore.dispatch('userLogIn', formState)
+    await appStore.dispatch('loginWithNameAndPassword', formState)
 
     const isAdmin = Boolean(Cookies.get('isAdmin'));
     const isUser = Boolean(Cookies.get('isUser'));
